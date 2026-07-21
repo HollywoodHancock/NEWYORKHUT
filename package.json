@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "bundle": "esbuild src/index-v29.js --bundle --format=esm --platform=browser --target=es2022 --outfile=src/index.js",
-    "check": "wrangler deploy --dry-run",
-    "deploy": "npm run check && wrangler deploy",
+    "bundle": "esbuild src/index-v33.js --bundle --format=esm --platform=browser --target=es2022 --outfile=src/index.js",
+    "audit": "wrangler deploy --dry-run",
+    "check": "wrangler deploy",
+    "build": "wrangler deploy",
+    "deploy": "wrangler deploy",
     "dev": "wrangler dev"
   },
   "devDependencies": {
