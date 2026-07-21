@@ -1,0 +1,181 @@
+{
+  "updated": "2026-07-21",
+  "articles": [
+    {
+      "slug": "what-is-new-york-hut",
+      "title": "What Is New York HUT?",
+      "metaTitle": "What Is New York HUT? Highway Use Tax Explained",
+      "metaDescription": "Learn what New York Highway Use Tax is, which credentials covered carriers receive, and how HUT fits into trucking compliance.",
+      "category": "Getting Started",
+      "summary": "A plain-language introduction to New York Highway Use Tax, HUT accounts, vehicle credentials, and continuing carrier responsibilities.",
+      "sections": [
+        {
+          "heading": "New York Highway Use Tax explained",
+          "body": "New York Highway Use Tax, commonly called HUT, is a state tax and registration program that applies to certain motor vehicles operating on New York public highways. The program is administered by the New York State Department of Taxation and Finance."
+        },
+        {
+          "heading": "What a HUT credential does",
+          "body": "For covered operations, a carrier generally establishes a HUT account and obtains credentials for qualifying vehicles. A HUT credential identifies a vehicle as associated with a registered account. It does not replace operating authority, vehicle registration, insurance, IFTA, IRP, or other permits that may apply."
+        },
+        {
+          "heading": "Registration is only the beginning",
+          "body": "Carriers may also have filing, tax-payment, mileage-record, and credential-maintenance responsibilities after registration. Requirements can depend on vehicle weight, configuration, use, and exemptions."
+        }
+      ],
+      "related": ["who-needs-a-new-york-hut-permit", "how-to-get-a-new-york-hut-permit"]
+    },
+    {
+      "slug": "who-needs-a-new-york-hut-permit",
+      "title": "Who Needs a New York HUT Permit?",
+      "metaTitle": "Who Needs a New York HUT Permit? Eligibility Guide",
+      "metaDescription": "Review the vehicle weight, commercial operation, configuration, and exemption factors that affect New York HUT requirements.",
+      "category": "Eligibility",
+      "summary": "A practical screening guide for carriers determining whether a vehicle may require New York HUT credentials.",
+      "sections": [
+        {
+          "heading": "Start with the vehicle",
+          "body": "New York HUT commonly applies to commercial carriers operating qualifying motor vehicles on New York public highways. The analysis should begin with the vehicle and its operation, not merely the carrier's home state."
+        },
+        {
+          "heading": "Primary screening factors",
+          "items": [
+            "Whether the vehicle will operate on New York public highways",
+            "Whether the operation is commercial",
+            "The vehicle's gross and unloaded weight",
+            "The vehicle configuration and use",
+            "Whether a specific exemption applies"
+          ]
+        },
+        {
+          "heading": "Out-of-state carriers",
+          "body": "A carrier does not have to be based in New York for HUT requirements to apply. A qualifying vehicle entering New York may still require credentials."
+        }
+      ],
+      "related": ["what-is-new-york-hut", "new-york-hut-weight-requirements"]
+    },
+    {
+      "slug": "new-york-hut-weight-requirements",
+      "title": "New York HUT Weight Requirements",
+      "metaTitle": "New York HUT Weight Requirements for Trucks",
+      "metaDescription": "Understand why gross weight, unloaded weight, and vehicle configuration matter when determining New York HUT requirements.",
+      "category": "Vehicle Requirements",
+      "summary": "An overview of the vehicle-weight information carriers should gather before screening or registering for HUT.",
+      "sections": [
+        {
+          "heading": "Why weight matters",
+          "body": "Vehicle weight is a central part of New York HUT eligibility. Carriers should not rely only on one registration field, a door sticker, or a general fleet assumption."
+        },
+        {
+          "heading": "Information to gather",
+          "items": [
+            "Registered gross weight",
+            "Actual or declared gross weight",
+            "Unloaded weight",
+            "Number of axles and vehicle configuration",
+            "Trailer use, when applicable"
+          ]
+        },
+        {
+          "heading": "Avoid incomplete information",
+          "body": "Incorrect weight information can lead to the wrong registration path or incomplete credentials. Use vehicle registration, title, manufacturer information, and the actual operating configuration when preparing an order."
+        }
+      ],
+      "related": ["who-needs-a-new-york-hut-permit", "how-to-get-a-new-york-hut-permit"]
+    },
+    {
+      "slug": "how-to-get-a-new-york-hut-permit",
+      "title": "How to Get a New York HUT Permit",
+      "metaTitle": "How to Get a New York HUT Permit: Step-by-Step",
+      "metaDescription": "Follow a practical process for preparing carrier and vehicle information and submitting a New York HUT registration request.",
+      "category": "Registration",
+      "summary": "A step-by-step registration guide covering service selection, carrier information, vehicle details, and secure submission.",
+      "sections": [
+        {
+          "heading": "Choose the correct service",
+          "body": "Determine whether you need a first-time registration, temporary permit, vehicle addition, renewal, replacement, or account update."
+        },
+        {
+          "heading": "Gather carrier information",
+          "items": [
+            "Legal business name and DBA",
+            "Physical and mailing addresses",
+            "Federal tax identification information",
+            "USDOT number, when applicable",
+            "Primary contact details"
+          ]
+        },
+        {
+          "heading": "Gather vehicle information",
+          "items": [
+            "VIN, year, make, plate, and unit number",
+            "Registered and gross weight",
+            "Ownership and registration details"
+          ]
+        },
+        {
+          "heading": "Submit securely",
+          "body": "Use the secure NYHUT.com application for tax identification, payment, customer account access, and document delivery."
+        }
+      ],
+      "related": ["what-is-new-york-hut", "temporary-new-york-hut-permit-guide"]
+    },
+    {
+      "slug": "temporary-new-york-hut-permit-guide",
+      "title": "Temporary New York HUT Permit Guide",
+      "metaTitle": "Temporary New York HUT Permit Guide",
+      "metaDescription": "Learn when a temporary New York HUT permit may be needed and what information to prepare for a time-sensitive request.",
+      "category": "Temporary Permits",
+      "summary": "Guidance for carriers preparing a vehicle-specific temporary HUT permit request before entering New York.",
+      "sections": [
+        {
+          "heading": "When temporary authority may be relevant",
+          "body": "A temporary HUT permit may be relevant when a qualifying vehicle must operate in New York before permanent credentials are available. Temporary authority is vehicle-specific and should be requested before the trip."
+        },
+        {
+          "heading": "Information to prepare",
+          "items": [
+            "Carrier legal name and contact information",
+            "Vehicle VIN, plate, state, year, and make",
+            "Vehicle weight and configuration",
+            "Expected New York operating date",
+            "Existing HUT account information, if any"
+          ]
+        },
+        {
+          "heading": "Do not wait until after the trip",
+          "body": "A temporary permit should be requested before operation. Do not assume temporary authority will correct prior unregistered travel."
+        }
+      ],
+      "related": ["how-to-get-a-new-york-hut-permit", "new-york-hut-penalties-and-recordkeeping"]
+    },
+    {
+      "slug": "new-york-hut-penalties-and-recordkeeping",
+      "title": "New York HUT Penalties and Recordkeeping",
+      "metaTitle": "New York HUT Penalties, Filings and Recordkeeping",
+      "metaDescription": "Review why timely registration, accurate mileage records, filings, and credential maintenance matter for New York HUT compliance.",
+      "category": "Compliance",
+      "summary": "An overview of continuing HUT responsibilities and common compliance risks after vehicle credentials are issued.",
+      "sections": [
+        {
+          "heading": "Compliance continues after registration",
+          "body": "HUT compliance does not end when a certificate is issued. Carriers may have continuing filing, tax-payment, mileage-record, and credential-maintenance responsibilities."
+        },
+        {
+          "heading": "Common risk areas",
+          "items": [
+            "Operating before obtaining required credentials",
+            "Using credentials assigned to another vehicle",
+            "Failing to update fleet or account information",
+            "Incomplete mileage and trip records",
+            "Late or missing returns"
+          ]
+        },
+        {
+          "heading": "Maintain organized records",
+          "body": "Penalties, interest, assessments, or enforcement may result when requirements are not met. Maintain organized records by vehicle and reporting period."
+        }
+      ],
+      "related": ["what-is-new-york-hut", "temporary-new-york-hut-permit-guide"]
+    }
+  ]
+}
