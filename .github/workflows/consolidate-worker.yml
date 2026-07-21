@@ -1,0 +1,67 @@
+name: Consolidate Worker Entry
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "package.json"
+      - "src/index-v29.js"
+      - ".github/workflows/consolidate-worker.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  consolidate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Compile current version chain
+        run: npm run check
+
+      - name: Bundle production Worker
+        run: npm run bundle
+
+      - name: Verify bundled JavaScript
+        run: node --check src/index.js
+
+      - name: Point Wrangler to consolidated entry
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const path = 'wrangler.jsonc';
+          const text = fs.readFileSync(path, 'utf8');
+          const updated = text.replace(/"main"\s*:\s*"[^"]+"/, '"main": "src/index.js"');
+          if (updated === text && !text.includes('"main": "src/index.js"')) {
+            throw new Error('Unable to update Wrangler main entry');
+          }
+          fs.writeFileSync(path, updated);
+          NODE
+
+      - name: Verify consolidated Worker
+        run: npx wrangler deploy --dry-run
+
+      - name: Commit consolidated entry
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/index.js wrangler.jsonc
+          if git diff --cached --quiet; then
+            echo "Consolidated Worker is already current."
+          else
+            git commit -m "Consolidate production Worker entry"
+            git push
+          fi
