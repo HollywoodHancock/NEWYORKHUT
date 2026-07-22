@@ -17,7 +17,7 @@ permissions:
 
 concurrency:
   group: newyorkhut-production
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   deploy:
@@ -37,44 +37,47 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Validate Worker source
-        run: node --check src/index-v29.js
+      - name: Validate current Worker entrypoint
+        run: npm run check
 
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy
+          command: deploy --config wrangler.jsonc
 
-      - name: Verify production version
+      - name: Verify production deployment marker
         shell: bash
         run: |
           set -euo pipefail
+          expected='v52-visible-navigation-buttons-2026-07-21-02'
           for attempt in {1..12}; do
-            body=$(curl --silent --show-error --fail --max-time 15 https://newyorkhut.com/__version || true)
-            if echo "$body" | grep -q '"version": "v29"'; then
-              echo "Production is serving NewYorkHUT v29."
-              break
+            body=$(curl --silent --show-error --fail --max-time 15 https://newyorkhut.com/__deploy_probe || true)
+            if echo "$body" | grep -q "$expected"; then
+              echo "Production is serving $expected."
+              exit 0
             fi
             if [ "$attempt" -eq 12 ]; then
-              echo "Production did not report v29 after deployment."
+              echo "Production did not report $expected after deployment."
               echo "$body"
               exit 1
             fi
             sleep 10
           done
 
-      - name: Verify production feature routes
+      - name: Verify public navigation routes
         shell: bash
         run: |
           set -euo pipefail
           routes=(
-            "/tools/vin-decoder"
-            "/tools/compliance-calendar"
-            "/tools/fleet-compliance"
-            "/fleet-toolkit"
-            "/tools/compliance-assistant"
+            "/"
+            "/learn"
+            "/new-york-hut-guide"
+            "/tools"
+            "/services"
+            "/ask-hut-ai"
+            "/site-map"
           )
           for route in "${routes[@]}"; do
             status=$(curl --silent --output /dev/null --write-out "%{http_code}" --max-time 15 "https://newyorkhut.com${route}")
