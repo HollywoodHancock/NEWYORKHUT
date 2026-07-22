@@ -20,19 +20,17 @@ jobs:
     name: Verify NewYorkHUT.com
     runs-on: ubuntu-latest
     timeout-minutes: 15
-
     env:
       SITE_URL: https://newyorkhut.com
       PROBE_URL: https://newyorkhut.com/__deploy_probe
-      FAILURE_ISSUE_TITLE: "Production smoke test failed"
+      FAILURE_ISSUE_TITLE: Production smoke test failed
 
     steps:
-      - name: Wait for Cloudflare deployment and fetch production
+      - name: Fetch production after Cloudflare deployment
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p smoke-test
-
           for attempt in $(seq 1 20); do
             echo "Production check attempt ${attempt}/20"
             if curl --fail --silent --show-error --location \
@@ -41,18 +39,13 @@ jobs:
               --dump-header smoke-test/headers.txt \
               --output smoke-test/homepage.html \
               "$SITE_URL"; then
-              echo "Production homepage is reachable over HTTPS."
               break
             fi
-
-            if [[ "$attempt" -eq 20 ]]; then
-              echo "Production did not become reachable after 20 attempts."
-              exit 1
-            fi
+            [[ "$attempt" -lt 20 ]] || exit 1
             sleep 30
           done
 
-      - name: Verify HTTP status, redirect, and TLS
+      - name: Verify HTTP, redirect, and TLS
         shell: bash
         run: |
           set -euo pipefail
@@ -60,103 +53,73 @@ jobs:
             --output /dev/null \
             --write-out '%{http_code}|%{url_effective}|%{ssl_verify_result}' \
             --max-time 30 --connect-timeout 10 \
-            --proto '=https' --tlsv1.2 \
-            "$SITE_URL")
-
+            --proto '=https' --tlsv1.2 "$SITE_URL")
           IFS='|' read -r status final_url ssl_result <<< "$result"
           echo "HTTP status: $status"
           echo "Final URL: $final_url"
-          echo "TLS verification result: $ssl_result"
+          echo "TLS result: $ssl_result"
+          [[ "$status" == 200 ]]
+          [[ "$ssl_result" == 0 ]]
+          [[ "$final_url" == https://newyorkhut.com/* || "$final_url" == https://www.newyorkhut.com/* ]]
 
-          [[ "$status" == "200" ]] || { echo "Expected HTTP 200, received $status"; exit 1; }
-          [[ "$ssl_result" == "0" ]] || { echo "TLS verification failed: $ssl_result"; exit 1; }
-          [[ "$final_url" == https://newyorkhut.com/* || "$final_url" == https://www.newyorkhut.com/* ]] || {
-            echo "Unexpected final URL: $final_url"
-            exit 1
-          }
-
-      - name: Verify deployment probe JSON
+      - name: Verify deployment probe
         shell: bash
         run: |
           set -euo pipefail
           curl --fail --silent --show-error --location \
             --max-time 30 --connect-timeout 10 \
             --proto '=https' --tlsv1.2 \
-            --output smoke-test/deploy-probe.json \
-            "$PROBE_URL"
-
+            --output smoke-test/deploy-probe.json "$PROBE_URL"
           python3 - <<'PY'
           import json
           from pathlib import Path
-
-          path = Path('smoke-test/deploy-probe.json')
-          data = json.loads(path.read_text())
-
-          required = {
-              'application': 'NewYorkHUT.com',
-              'entrypoint': 'src/index.js',
-          }
-          for key, expected in required.items():
-              actual = data.get(key)
-              if actual != expected:
-                  raise SystemExit(f'Unexpected {key}: {actual!r}; expected {expected!r}')
-
+          data = json.loads(Path('smoke-test/deploy-probe.json').read_text())
+          assert data.get('application') == 'NewYorkHUT.com', data
+          assert data.get('entrypoint') == 'src/index.js', data
           version = data.get('version', '')
           marker = data.get('deploymentMarker', '')
           target = data.get('target', '')
-
-          if not isinstance(version, str) or not version.startswith('v'):
-              raise SystemExit(f'Invalid version: {version!r}')
-          if not isinstance(marker, str) or not marker.startswith(version):
-              raise SystemExit(f'Invalid deployment marker: {marker!r}')
-          if not isinstance(target, str) or not target.endswith('.js'):
-              raise SystemExit(f'Invalid target: {target!r}')
-
-          print(f'Deployment version: {version}')
-          print(f'Deployment marker: {marker}')
-          print(f'Target: {target}')
+          assert isinstance(version, str) and version.startswith('v'), data
+          assert isinstance(marker, str) and marker.startswith(version), data
+          assert isinstance(target, str) and target.endswith('.js'), data
+          print('Deployment marker:', marker)
           PY
 
       - name: Verify rendered navigation
         shell: bash
         run: |
           set -euo pipefail
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
 
-          if ! grep -Eiq '<header[^>]*(id|class)=["'"'][^"'"']*(nyh-global-header|nyh47-header|nyh-site-header)' smoke-test/homepage.html; then
-            echo "The production homepage does not contain a rendered navigation header."
-            grep -Ein 'nyh-global-header|nyh47-header|nyh-site-header|nyh-universal-nav' smoke-test/homepage.html || true
-            exit 1
-          fi
+          html = Path('smoke-test/homepage.html').read_text(errors='replace')
+          headers = re.findall(r'<header\b[^>]*>', html, flags=re.I)
+          navs = re.findall(r'<nav\b[^>]*>', html, flags=re.I)
 
-          if ! grep -Eiq '<nav[^>]*aria-label=["'"']Primary navigation["'"']' smoke-test/homepage.html; then
-            echo "The production homepage does not contain an accessible primary navigation element."
-            exit 1
-          fi
+          header_tokens = ('nyh-global-header', 'nyh47-header', 'nyh-site-header')
+          has_header = any(any(token in tag for token in header_tokens) for tag in headers)
+          has_primary_nav = any(re.search(r'aria-label\s*=\s*["\']Primary navigation["\']', tag, re.I) for tag in navs)
 
-          echo "Rendered primary navigation found."
+          print('Rendered headers:', headers[:10])
+          print('Rendered navs:', navs[:10])
 
-      - name: Write smoke-test summary
+          if not has_header:
+              raise SystemExit('No recognized rendered site header found.')
+          if not has_primary_nav:
+              raise SystemExit('No accessible primary navigation found.')
+          PY
+
+      - name: Write summary
         if: always()
         shell: bash
         run: |
-          {
-            echo "## NewYorkHUT.com production smoke test"
-            echo
-            echo "- Site: $SITE_URL"
-            echo "- Trigger: $GITHUB_EVENT_NAME"
-            echo "- Commit: $GITHUB_SHA"
-            echo "- Result: ${{ job.status }}"
-            if [[ -f smoke-test/deploy-probe.json ]]; then
-              python3 - <<'PY'
-          import json
-          from pathlib import Path
-          data = json.loads(Path('smoke-test/deploy-probe.json').read_text())
-          print(f"- Deployment marker: {data.get('deploymentMarker', 'unknown')}")
-          PY
-            fi
-          } >> "$GITHUB_STEP_SUMMARY"
+          echo "## NewYorkHUT.com production smoke test" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Site: $SITE_URL" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Commit: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Result: ${{ job.status }}" >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Upload diagnostic responses
+      - name: Upload diagnostics
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -173,45 +136,22 @@ jobs:
             const title = process.env.FAILURE_ISSUE_TITLE;
             const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
             const body = [
-              'The automated production smoke test failed.',
-              '',
+              'The automated production smoke test failed.', '',
               `- Site: ${process.env.SITE_URL}`,
               `- Commit: ${context.sha}`,
               `- Trigger: ${context.eventName}`,
-              `- Workflow run: ${runUrl}`,
-              '',
-              'The run includes the fetched homepage, headers, and deployment probe as diagnostic artifacts.'
+              `- Workflow run: ${runUrl}`, '',
+              'Diagnostic files are attached to the workflow run.'
             ].join('\n');
-
             const issues = await github.paginate(github.rest.issues.listForRepo, {
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'open',
-              per_page: 100
+              owner: context.repo.owner, repo: context.repo.repo, state: 'open', per_page: 100
             });
-            const existing = issues.find(issue => !issue.pull_request && issue.title === title);
-
+            const existing = issues.find(i => !i.pull_request && i.title === title);
             if (existing) {
-              await github.rest.issues.update({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: existing.number,
-                body
-              });
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: existing.number,
-                body: `Smoke test failed again: ${runUrl}`
-              });
+              await github.rest.issues.update({owner: context.repo.owner, repo: context.repo.repo, issue_number: existing.number, body});
+              await github.rest.issues.createComment({owner: context.repo.owner, repo: context.repo.repo, issue_number: existing.number, body: `Smoke test failed again: ${runUrl}`});
             } else {
-              await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title,
-                body,
-                labels: ['production']
-              });
+              await github.rest.issues.create({owner: context.repo.owner, repo: context.repo.repo, title, body, labels: ['production']});
             }
 
       - name: Close resolved failure issue
@@ -221,25 +161,10 @@ jobs:
           script: |
             const title = process.env.FAILURE_ISSUE_TITLE;
             const issues = await github.paginate(github.rest.issues.listForRepo, {
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'open',
-              per_page: 100
+              owner: context.repo.owner, repo: context.repo.repo, state: 'open', per_page: 100
             });
-            const existing = issues.find(issue => !issue.pull_request && issue.title === title);
-
+            const existing = issues.find(i => !i.pull_request && i.title === title);
             if (existing) {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: existing.number,
-                body: `Production smoke test passed on commit ${context.sha}. Closing this incident.`
-              });
-              await github.rest.issues.update({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: existing.number,
-                state: 'closed',
-                state_reason: 'completed'
-              });
+              await github.rest.issues.createComment({owner: context.repo.owner, repo: context.repo.repo, issue_number: existing.number, body: `Production smoke test passed on commit ${context.sha}. Closing this incident.`});
+              await github.rest.issues.update({owner: context.repo.owner, repo: context.repo.repo, issue_number: existing.number, state: 'closed', state_reason: 'completed'});
             }
