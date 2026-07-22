@@ -52,13 +52,20 @@ function header(){return `<header class="nyh-global-header"><div class="nyh-glob
 
 function footer(){return `<footer class="nyh-global-footer"><div class="nyh-footer-inner"><div class="nyh-footer-grid">${groups.map(g=>`<section><h2>${g.title}</h2>${g.links.map(x=>`<a href="${x[1]}">${x[0]}</a>`).join('')}</section>`).join('')}</div><div class="nyh-footer-bottom"><span>NewYorkHUT.com provides independent educational guidance for New York Highway Use Tax compliance.</span><span><a href="/site-map">View all public pages</a> · <a href="${PORTAL}">MY NYHUT</a></span></div></div></footer>`}
 
+function hasRenderedClass(html,className){
+  const tagPattern=new RegExp(`<(?:header|footer|nav|div)[^>]*class=["'][^"']*\\b${className}\\b[^"']*["']`,'i');
+  return tagPattern.test(html);
+}
+
 function decorate(html){
   if(!html||!/<html[\s>]/i.test(html))return html;
   let out=html;
-  if(!out.includes('nyh-universal-nav-css'))out=out.replace(/<\/head>/i,GLOBAL_CSS+'</head>');
-  if(/<header class="top">[\s\S]*?<\/header>/i.test(out))out=out.replace(/<header class="top">[\s\S]*?<\/header>/i,header());
-  else if(!out.includes('nyh-global-header'))out=out.replace(/<body([^>]*)>/i,`<body$1>${header()}`);
-  if(!out.includes('nyh-global-footer'))out=out.replace(/<\/body>/i,footer()+'</body>');
+  const hasGlobalHeader=hasRenderedClass(out,'nyh-global-header');
+  const hasGlobalFooter=hasRenderedClass(out,'nyh-global-footer');
+  if(!out.includes('id="nyh-universal-nav-css"'))out=out.replace(/<\/head>/i,GLOBAL_CSS+'</head>');
+  if(/<header\b[^>]*class=["'][^"']*\btop\b[^"']*["'][^>]*>[\s\S]*?<\/header>/i.test(out))out=out.replace(/<header\b[^>]*class=["'][^"']*\btop\b[^"']*["'][^>]*>[\s\S]*?<\/header>/i,header());
+  else if(!hasGlobalHeader)out=out.replace(/<body([^>]*)>/i,`<body$1>${header()}`);
+  if(!hasGlobalFooter)out=out.replace(/<\/body>/i,footer()+'</body>');
   return out;
 }
 
