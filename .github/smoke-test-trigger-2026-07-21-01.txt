@@ -1,0 +1,1 @@
+Triggers the Production Smoke Test workflow after installation.
