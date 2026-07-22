@@ -1,6 +1,6 @@
 import site from './index-v52.js';
 
-const DEPLOYMENT_MARKER = 'v52-visible-navigation-buttons-2026-07-21-02';
+const DEPLOYMENT_MARKER = 'v52-homepage-navigation-injection-fix-2026-07-21-03';
 
 export default {
   async fetch(request, env, ctx) {
