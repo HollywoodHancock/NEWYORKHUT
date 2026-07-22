@@ -4,7 +4,7 @@ const VERSION = 'v53';
 const ORDER = 'https://www.nyhut.com/';
 
 const NAV_CSS = `<style id="nyh-v53-navigation-css">
-#nyh-global-header{display:block!important;visibility:visible!important;opacity:1!important;position:sticky;top:0;z-index:2147483646;background:#fff;border-bottom:1px solid #d7e3ed;box-shadow:0 4px 18px rgba(8,43,76,.09);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;transform:none!important}
+html body > header#nyh-global-header{display:block!important;visibility:visible!important;opacity:1!important;position:sticky;top:0;z-index:2147483646;background:#fff;border-bottom:1px solid #d7e3ed;box-shadow:0 4px 18px rgba(8,43,76,.09);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;transform:none!important}
 #nyh-global-header .nyh-global-nav{width:min(1180px,calc(100% - 40px));min-height:76px;margin:auto;display:flex!important;align-items:center;justify-content:space-between;gap:20px;padding:11px 0}
 #nyh-global-header .nyh-global-brand{display:block!important;font-weight:950;font-size:1.16rem;color:#082b4c;text-decoration:none;white-space:nowrap}
 #nyh-global-header .nyh-global-links{display:flex!important;visibility:visible!important;opacity:1!important;align-items:center;gap:9px;flex-wrap:wrap;position:static!important;transform:none!important}
@@ -27,6 +27,12 @@ function injectNavigation(html) {
   output = output.replace(/<header\b[^>]*(?:id=["']nyh-global-header["']|class=["'][^"']*\bnyh-global-header\b[^"']*["'])[^>]*>[\s\S]*?<\/header>/gi, '');
   output = output.replace(/<header\b[^>]*id=["']nyh47-header["'][^>]*>[\s\S]*?<\/header>/gi, '');
 
+  // Neutralize the legacy v47 rule that hides every top-level header except nyh47-header.
+  output = output.replace(
+    /body>header:not\(#nyh47-header\),body>nav:not\(\.nyh47-menu\),body>footer:not\(#nyh47-footer\)\{display:none!important\}/gi,
+    'body>header:not(#nyh47-header):not(#nyh-global-header),body>nav:not(.nyh47-menu),body>footer:not(#nyh47-footer){display:none!important}'
+  );
+
   if (!output.includes('id="nyh-v53-navigation-css"')) {
     output = /<\/head>/i.test(output)
       ? output.replace(/<\/head>/i, `${NAV_CSS}</head>`)
@@ -47,7 +53,7 @@ export default {
     const response = await site.fetch(request, env, ctx);
     const headers = new Headers(response.headers);
     headers.set('x-newyorkhut-version', VERSION);
-    headers.set('x-newyorkhut-navigation', 'universal-buttons-v53-visible');
+    headers.set('x-newyorkhut-navigation', 'universal-buttons-v53-visible-fixed');
     headers.set('cache-control', 'no-store, no-cache, must-revalidate, max-age=0');
 
     const type = headers.get('content-type') || '';
