@@ -30,7 +30,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p smoke-test
+          mkdir -p smoke-test/pages
           for attempt in $(seq 1 20); do
             echo "Production check attempt ${attempt}/20"
             if curl --fail --silent --show-error --location \
@@ -85,29 +85,76 @@ jobs:
           print('Deployment marker:', marker)
           PY
 
-      - name: Verify rendered navigation
+      - name: Audit navigation on every public page
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
           import re
+          import ssl
+          import urllib.request
           from pathlib import Path
 
-          html = Path('smoke-test/homepage.html').read_text(errors='replace')
-          headers = re.findall(r'<header\b[^>]*>', html, flags=re.I)
-          navs = re.findall(r'<nav\b[^>]*>', html, flags=re.I)
+          base = 'https://newyorkhut.com'
+          paths = [
+              '/', '/new-york-hut-guide', '/learn', '/ask-hut-ai', '/tools',
+              '/tools/eligibility-checker', '/tools/permit-service-finder',
+              '/tools/readiness-checklist', '/tools/hut-tax-estimator',
+              '/tools/trip-cost-estimator', '/tools/weight-guide',
+              '/tools/filing-deadlines', '/services', '/services/new-hut-permit',
+              '/services/temporary-hut-permit', '/services/hut-renewal',
+              '/services/add-a-vehicle', '/services/replacement-permit',
+              '/services/account-update', '/what-is-hut',
+              '/new-york-hut/do-i-need-new-york-hut',
+              '/new-york-hut/new-york-hut-weight-threshold',
+              '/new-york-hut/what-is-a-new-york-hut-trip-certificate',
+              '/new-york-hut/vehicles-and-decals',
+              '/new-york-hut/filing-and-taxes', '/new-york-hut/exemptions',
+              '/new-york-hut/enforcement', '/site-map'
+          ]
 
-          header_tokens = ('nyh-global-header', 'nyh47-header', 'nyh-site-header')
-          has_header = any(any(token in tag for token in header_tokens) for tag in headers)
-          has_primary_nav = any(re.search(r'aria-label\s*=\s*["\']Primary navigation["\']', tag, re.I) for tag in navs)
+          report = []
+          failures = []
+          context = ssl.create_default_context()
 
-          print('Rendered headers:', headers[:10])
-          print('Rendered navs:', navs[:10])
+          for index, path in enumerate(paths):
+              url = base + path
+              request = urllib.request.Request(url, headers={'User-Agent': 'NewYorkHUT-Smoke-Test/1.0'})
+              try:
+                  with urllib.request.urlopen(request, timeout=30, context=context) as response:
+                      status = response.status
+                      html = response.read().decode('utf-8', errors='replace')
+              except Exception as exc:
+                  failures.append(f'{path}: request failed: {exc}')
+                  report.append(f'FAIL {path} request failed: {exc}')
+                  continue
 
-          if not has_header:
-              raise SystemExit('No recognized rendered site header found.')
-          if not has_primary_nav:
-              raise SystemExit('No accessible primary navigation found.')
+              filename = f'{index:02d}-' + (path.strip('/').replace('/', '-') or 'home') + '.html'
+              Path('smoke-test/pages', filename).write_text(html)
+
+              header = re.search(r'<header\b[^>]*(?:id=["\']nyh-global-header["\']|class=["\'][^"\']*\bnyh-global-header\b[^"\']*["\'])', html, re.I)
+              nav = re.search(r'<nav\b[^>]*aria-label\s*=\s*["\']Primary navigation["\']', html, re.I)
+              buttons = re.findall(r'<nav\b[^>]*aria-label\s*=\s*["\']Primary navigation["\'][^>]*>[\s\S]*?</nav>', html, re.I)
+              expected_links = ['/learn', '/new-york-hut-guide', '/tools', '/services', '/ask-hut-ai', '/site-map']
+              missing_links = [link for link in expected_links if not buttons or f'href="{link}"' not in buttons[0]]
+
+              problems = []
+              if status != 200: problems.append(f'HTTP {status}')
+              if not header: problems.append('missing universal header')
+              if not nav: problems.append('missing primary navigation')
+              if missing_links: problems.append('missing links: ' + ', '.join(missing_links))
+
+              if problems:
+                  message = f'{path}: ' + '; '.join(problems)
+                  failures.append(message)
+                  report.append('FAIL ' + message)
+              else:
+                  report.append('PASS ' + path)
+
+          Path('smoke-test/navigation-audit.txt').write_text('\n'.join(report) + '\n')
+          print('\n'.join(report))
+          if failures:
+              raise SystemExit('Navigation audit failed:\n' + '\n'.join(failures))
           PY
 
       - name: Write summary
@@ -118,6 +165,9 @@ jobs:
           echo "- Site: $SITE_URL" >> "$GITHUB_STEP_SUMMARY"
           echo "- Commit: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
           echo "- Result: ${{ job.status }}" >> "$GITHUB_STEP_SUMMARY"
+          if [[ -f smoke-test/navigation-audit.txt ]]; then
+            echo "- Public routes audited: $(wc -l < smoke-test/navigation-audit.txt)" >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Upload diagnostics
         if: always()
@@ -141,7 +191,7 @@ jobs:
               `- Commit: ${context.sha}`,
               `- Trigger: ${context.eventName}`,
               `- Workflow run: ${runUrl}`, '',
-              'Diagnostic files are attached to the workflow run.'
+              'The workflow audits navigation across every public route. Diagnostic HTML and the route report are attached to the run.'
             ].join('\n');
             const issues = await github.paginate(github.rest.issues.listForRepo, {
               owner: context.repo.owner, repo: context.repo.repo, state: 'open', per_page: 100
