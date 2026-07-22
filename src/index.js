@@ -1,6 +1,6 @@
-import site from './index-v50.js';
+import site from './index-v51.js';
 
-const DEPLOYMENT_MARKER = 'v50-authority-tools-ai-2026-07-21-01';
+const DEPLOYMENT_MARKER = 'v51-universal-public-navigation-2026-07-21-01';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,15 +10,15 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v50',
+        version: 'v51',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v50.js'
+        target: 'src/index-v51.js'
       }, null, 2), {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v50',
+          'x-newyorkhut-version': 'v51',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER
         }
       });
