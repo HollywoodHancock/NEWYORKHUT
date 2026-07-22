@@ -4,6 +4,9 @@
   "main": "src/index.js",
   "compatibility_date": "2026-07-20",
   "workers_dev": true,
+  "vars": {
+    "DEPLOY_RELEASE": "v52-nav-buttons-2026-07-21-02"
+  },
   "observability": {
     "enabled": true
   }
