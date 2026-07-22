@@ -1,0 +1,171 @@
+name: Production Smoke Test
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  schedule:
+    - cron: "17 */6 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-smoke-test
+  cancel-in-progress: true
+
+jobs:
+  verify-production:
+    name: Verify NewYorkHUT.com
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      SITE_URL: https://newyorkhut.com
+      PROBE_URL: https://newyorkhut.com/__deploy_probe
+
+    steps:
+      - name: Wait for Cloudflare deployment and fetch production
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p smoke-test
+
+          # Cloudflare may still be deploying immediately after a push. Retry for
+          # up to approximately 10 minutes before declaring production unhealthy.
+          for attempt in $(seq 1 20); do
+            echo "Production check attempt ${attempt}/20"
+
+            if curl \
+              --fail \
+              --silent \
+              --show-error \
+              --location \
+              --max-time 30 \
+              --connect-timeout 10 \
+              --proto '=https' \
+              --tlsv1.2 \
+              --dump-header smoke-test/headers.txt \
+              --output smoke-test/homepage.html \
+              "$SITE_URL"; then
+              echo "Production homepage is reachable over HTTPS."
+              break
+            fi
+
+            if [[ "$attempt" -eq 20 ]]; then
+              echo "Production did not become reachable after 20 attempts."
+              exit 1
+            fi
+
+            sleep 30
+          done
+
+      - name: Verify HTTP status and final URL
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          result=$(curl \
+            --silent \
+            --show-error \
+            --location \
+            --output /dev/null \
+            --write-out '%{http_code}|%{url_effective}|%{ssl_verify_result}' \
+            --max-time 30 \
+            --connect-timeout 10 \
+            --proto '=https' \
+            --tlsv1.2 \
+            "$SITE_URL")
+
+          IFS='|' read -r status final_url ssl_result <<< "$result"
+
+          echo "HTTP status: $status"
+          echo "Final URL: $final_url"
+          echo "TLS verification result: $ssl_result"
+
+          [[ "$status" == "200" ]] || {
+            echo "Expected HTTP 200, received $status"
+            exit 1
+          }
+
+          [[ "$ssl_result" == "0" ]] || {
+            echo "TLS certificate verification failed with result $ssl_result"
+            exit 1
+          }
+
+          [[ "$final_url" == https://newyorkhut.com/* || "$final_url" == https://www.newyorkhut.com/* ]] || {
+            echo "Unexpected final URL: $final_url"
+            exit 1
+          }
+
+      - name: Verify deployment probe
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          curl \
+            --fail \
+            --silent \
+            --show-error \
+            --location \
+            --max-time 30 \
+            --connect-timeout 10 \
+            --proto '=https' \
+            --tlsv1.2 \
+            --output smoke-test/deploy-probe.txt \
+            "$PROBE_URL"
+
+          probe=$(tr -d '\r\n' < smoke-test/deploy-probe.txt)
+          echo "Deployment probe: $probe"
+
+          [[ -n "$probe" ]] || {
+            echo "Deployment probe returned an empty response."
+            exit 1
+          }
+
+          [[ "$probe" == v* ]] || {
+            echo "Deployment probe did not return the expected version marker."
+            exit 1
+          }
+
+      - name: Verify rendered navigation
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Confirm that an actual HTML element—not merely stylesheet text—has
+          # the universal navigation class.
+          if ! grep -Eiq '<(header|nav)[^>]*class=["'"'][^"'"']*nyh-global-header' smoke-test/homepage.html; then
+            echo "The production homepage does not contain the rendered universal navigation header."
+            echo "Matching class references found in the response:"
+            grep -Ein 'nyh-global-header|nyh-universal-nav' smoke-test/homepage.html || true
+            exit 1
+          fi
+
+          echo "Rendered universal navigation header found."
+
+      - name: Write smoke-test summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## NewYorkHUT.com production smoke test"
+            echo
+            echo "- Site: $SITE_URL"
+            echo "- Trigger: $GITHUB_EVENT_NAME"
+            echo "- Commit: $GITHUB_SHA"
+            if [[ -f smoke-test/deploy-probe.txt ]]; then
+              echo "- Deployment marker: $(tr -d '\r\n' < smoke-test/deploy-probe.txt)"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload diagnostic responses
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-smoke-test-${{ github.run_id }}
+          path: smoke-test/
+          if-no-files-found: ignore
+          retention-days: 7
