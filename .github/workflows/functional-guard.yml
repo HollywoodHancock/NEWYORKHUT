@@ -1,0 +1,45 @@
+name: Functional Guard
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: newyorkhut-functional-guard-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  production-contract:
+    name: Verify production contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify canonical runtime and navigation safeguards
+        run: node scripts/verify-production-contract.mjs
+
+  live-production:
+    name: Verify live NewYorkHUT.com
+    if: github.event_name != 'pull_request'
+    needs: production-contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Allow Cloudflare build to publish
+        run: sleep 45
+      - name: Verify probe, critical routes, and visible-navigation contract
+        env:
+          SITE_URL: https://newyorkhut.com
+        run: node scripts/verify-live-site.mjs
