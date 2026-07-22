@@ -1,6 +1,6 @@
 import site from './index-v54.js';
 
-const DEPLOYMENT_MARKER = 'v54-mt903-gvw-tax-estimator-2026-07-22-01';
+const DEPLOYMENT_MARKER = 'v54-mt903-gvw-tax-estimator-2026-07-22-02';
 
 export default {
   async fetch(request, env, ctx) {
