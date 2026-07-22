@@ -1,0 +1,111 @@
+name: Verify v53 Navigation Deployment
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  verify-v53:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Wait for exact v53 deployment
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p diagnostics
+          for attempt in $(seq 1 20); do
+            curl --fail --silent --show-error --location \
+              --output diagnostics/probe.json \
+              https://newyorkhut.com/__deploy_probe || true
+            if python3 - <<'PY'
+          import json
+          from pathlib import Path
+          try:
+              data=json.loads(Path('diagnostics/probe.json').read_text())
+          except Exception:
+              raise SystemExit(1)
+          ok=(
+              data.get('version')=='v53' and
+              data.get('deploymentMarker')=='v53-universal-navigation-buttons-2026-07-22-01' and
+              data.get('target')=='src/index-v53.js' and
+              data.get('navigation')=='universal-buttons-v53'
+          )
+          print(data)
+          raise SystemExit(0 if ok else 1)
+          PY
+            then
+              echo 'Exact v53 deployment is live.'
+              break
+            fi
+            if [[ "$attempt" -eq 20 ]]; then
+              echo 'Custom domain never reported exact v53 deployment.'
+              exit 1
+            fi
+            sleep 30
+          done
+
+      - name: Verify visible navigation markup on key pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import re
+          import urllib.request
+          from pathlib import Path
+
+          paths=['/','/learn','/tools','/services','/new-york-hut-guide','/ask-hut-ai','/site-map']
+          failures=[]
+          for i,path in enumerate(paths):
+              req=urllib.request.Request('https://newyorkhut.com'+path,headers={'User-Agent':'NewYorkHUT-v53-verifier'})
+              with urllib.request.urlopen(req,timeout=30) as response:
+                  html=response.read().decode('utf-8','replace')
+                  headers=dict(response.headers)
+              Path(f'diagnostics/page-{i}.html').write_text(html)
+              header=re.search(r'<header\b[^>]*id=["\']nyh-global-header["\']',html,re.I)
+              nav=re.search(r'<nav\b[^>]*aria-label\s*=\s*["\']Primary navigation["\'][^>]*>([\s\S]*?)</nav>',html,re.I)
+              expected=['Learn','HUT Guide','Tools','Services','Ask HUT AI','All Pages','Order Permit']
+              missing=[label for label in expected if not nav or label not in nav.group(1)]
+              marker=headers.get('x-newyorkhut-navigation') or headers.get('X-Newyorkhut-Navigation')
+              if not header or missing or marker!='universal-buttons-v53':
+                  failures.append(f'{path}: header={bool(header)} missing={missing} marker={marker}')
+          if failures:
+              raise SystemExit('\n'.join(failures))
+          print('v53 navigation markup verified on all key pages.')
+          PY
+
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verify-v53-navigation-${{ github.run_id }}
+          path: diagnostics/
+          retention-days: 7
+
+      - name: Report v53 verification failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title='v53 navigation deployment failed';
+            const runUrl=`${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const body=`The live custom domain is not serving the exact v53 universal navigation deployment.\n\n- Commit: ${context.sha}\n- Run: ${runUrl}`;
+            const issues=await github.paginate(github.rest.issues.listForRepo,{owner:context.repo.owner,repo:context.repo.repo,state:'open',per_page:100});
+            const existing=issues.find(i=>!i.pull_request&&i.title===title);
+            if(existing) await github.rest.issues.update({owner:context.repo.owner,repo:context.repo.repo,issue_number:existing.number,body});
+            else await github.rest.issues.create({owner:context.repo.owner,repo:context.repo.repo,title,body,labels:['production']});
+
+      - name: Close resolved v53 failure
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title='v53 navigation deployment failed';
+            const issues=await github.paginate(github.rest.issues.listForRepo,{owner:context.repo.owner,repo:context.repo.repo,state:'open',per_page:100});
+            const existing=issues.find(i=>!i.pull_request&&i.title===title);
+            if(existing) await github.rest.issues.update({owner:context.repo.owner,repo:context.repo.repo,issue_number:existing.number,state:'closed',state_reason:'completed'});
