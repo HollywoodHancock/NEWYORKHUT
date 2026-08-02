@@ -1,6 +1,6 @@
-import site from './index-v60.js';
+import site from './index-v61.js';
 
-const DEPLOYMENT_MARKER = 'v60-mt903-filing-center-2026-08-02-01';
+const DEPLOYMENT_MARKER = 'v61-hut-registration-center-2026-08-02-01';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,28 +10,29 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v60',
+        version: 'v61',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v60.js',
+        target: 'src/index-v61.js',
         navigation: 'stable-global-navigation',
-        feature: 'mt903-filing-center-and-core-guides-v60',
-        hub: '/mt-903-filing-center',
+        feature: 'hut-registration-center-and-guides-v61',
+        hub: '/hut-registration-center',
         guides: [
-          '/learn/what-is-form-mt-903',
-          '/learn/who-must-file-mt-903',
-          '/learn/mt-903-filing-deadlines-and-frequency',
-          '/learn/new-york-hut-taxable-miles',
-          '/learn/hut-recordkeeping-requirements',
-          '/learn/amended-final-and-no-activity-mt-903-returns'
+          '/learn/who-needs-a-new-york-hut-permit',
+          '/learn/how-to-register-for-new-york-hut',
+          '/learn/new-york-hut-certificate-of-registration',
+          '/learn/new-york-hut-decals-explained',
+          '/learn/temporary-hut-permits-and-first-trip-questions',
+          '/learn/how-gvw-affects-your-hut-tax',
+          '/learn/common-hut-registration-mistakes'
         ]
       }, null, 2), {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v60',
+          'x-newyorkhut-version': 'v61',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-feature': 'mt903-filing-center-v60'
+          'x-newyorkhut-feature': 'hut-registration-center-v61'
         }
       });
     }
