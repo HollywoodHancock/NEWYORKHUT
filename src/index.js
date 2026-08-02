@@ -1,6 +1,6 @@
-import site from './index-v63.js';
+import site from './index-v64.js';
 
-const DEPLOYMENT_MARKER = 'v63-exemptions-special-vehicles-2026-08-02-01';
+const DEPLOYMENT_MARKER = 'v64-hut-forms-library-2026-08-02-01';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,30 +10,33 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v63',
+        version: 'v64',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v63.js',
+        target: 'src/index-v64.js',
         navigation: 'stable-global-navigation',
-        feature: 'exemptions-special-vehicles-center-and-guides-v63',
-        hub: '/exemptions-and-special-vehicles',
+        feature: 'hut-forms-library-and-form-guides-v64',
+        hub: '/forms-library',
         guides: [
-          '/learn/new-york-hut-farm-vehicle-exemption',
-          '/learn/government-vehicle-hut-exemption',
-          '/learn/recreational-vehicle-hut-exemption',
-          '/learn/dealer-and-transporter-plate-hut-exemption',
-          '/learn/household-goods-mover-hut-exemption',
-          '/learn/special-mobile-equipment-and-road-building-machines',
-          '/learn/new-york-hut-excluded-vehicles',
-          '/learn/new-york-hut-exempt-vehicles'
+          '/forms/tmt-1',
+          '/forms/mt-903',
+          '/forms/mt-903-i',
+          '/forms/mt-903-mn',
+          '/forms/mt-370-1',
+          '/forms/mt-370-2',
+          '/forms/tmt-39',
+          '/forms/tmt-334',
+          '/forms/dtf-406',
+          '/forms/mt-903-fut',
+          '/forms/hut-publications'
         ]
       }, null, 2), {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v63',
+          'x-newyorkhut-version': 'v64',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-feature': 'exemptions-special-vehicles-v63'
+          'x-newyorkhut-feature': 'hut-forms-library-v64'
         }
       });
     }
