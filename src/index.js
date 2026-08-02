@@ -1,6 +1,6 @@
-import site from './index-v70.js';
+import site from './index-v71.js';
 
-const DEPLOYMENT_MARKER = 'v70-worker-served-header-banner-2026-08-02-01';
+const DEPLOYMENT_MARKER = 'v71-clean-svg-header-banner-2026-08-02-01';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,16 +10,16 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v70',
+        version: 'v71',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v70.js',
+        target: 'src/index-v71.js',
         navigation: 'stable-global-navigation',
-        feature: 'worker-served-header-banner-v70',
+        feature: 'clean-svg-header-banner-v71',
         banner: {
-          asset: '/newyorkhut-header-banner.svg',
+          asset: '/newyorkhut-header-banner-v71.svg',
           source: 'public/newyorkhut-header-banner.svg',
-          delivery: 'worker-proxied-repository-asset',
+          delivery: 'clean-worker-byte-response',
           dimensions: '1600x300',
           placement: 'below-global-navigation'
         }
@@ -27,9 +27,9 @@ export default {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v70',
+          'x-newyorkhut-version': 'v71',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-feature': 'worker-served-header-banner-v70'
+          'x-newyorkhut-feature': 'clean-svg-header-banner-v71'
         }
       });
     }
