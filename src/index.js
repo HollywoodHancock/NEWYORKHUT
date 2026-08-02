@@ -1,6 +1,6 @@
-import site from './index-v67.js';
+import site from './index-v68.js';
 
-const DEPLOYMENT_MARKER = 'v67-expanded-ask-hut-ai-2026-08-02-01';
+const DEPLOYMENT_MARKER = 'v68-unified-hut-knowledge-center-2026-08-02-01';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,14 +10,17 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v67',
+        version: 'v68',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v67.js',
+        target: 'src/index-v68.js',
         navigation: 'stable-global-navigation',
-        feature: 'expanded-ask-hut-ai-knowledge-base-v67',
-        hub: '/ask-hut-ai',
-        knowledgeEntries: 20,
+        feature: 'unified-hut-knowledge-center-v68',
+        hub: '/learn',
+        aliases: [
+          '/knowledge-center',
+          '/new-york-hut-knowledge-center'
+        ],
         knowledgeCenters: [
           '/hut-registration-center',
           '/mt-903-filing-center',
@@ -28,19 +31,20 @@ export default {
           '/carrier-compliance-center',
           '/news-and-regulatory-center'
         ],
-        responseLinks: [
-          'related-guides',
-          'related-tools',
-          'official-source',
-          'nyhut-workflow'
+        connectedFeatures: [
+          'knowledge-centers',
+          'popular-tools',
+          'ask-hut-ai',
+          'nyhut-workflows',
+          'collection-page-structured-data'
         ]
       }, null, 2), {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v67',
+          'x-newyorkhut-version': 'v68',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-feature': 'expanded-ask-hut-ai-v67'
+          'x-newyorkhut-feature': 'unified-hut-knowledge-center-v68'
         }
       });
     }
