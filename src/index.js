@@ -1,6 +1,6 @@
 import site from './index-v77.js';
 
-const DEPLOYMENT_MARKER = 'v77-compact-global-layouts-2026-08-02-01';
+const DEPLOYMENT_MARKER = 'v77-compact-global-layouts-2026-08-02-02-redeploy-trigger';
 
 export default {
   async fetch(request, env, ctx) {
