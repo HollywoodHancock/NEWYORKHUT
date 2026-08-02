@@ -1,6 +1,6 @@
-import site from './index-v86.js';
+import site from './index-v87.js';
 
-const DEPLOYMENT_MARKER = 'v86-homepage-hero-top-alignment-2026-08-02-01';
+const DEPLOYMENT_MARKER = 'v87-canonical-global-navigation-2026-08-02-01';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,12 +10,18 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v86',
+        version: 'v87',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v86.js',
-        navigation: 'stable-global-navigation',
-        feature: 'homepage-hero-top-alignment-v86',
+        target: 'src/index-v87.js',
+        feature: 'canonical-global-navigation-v87',
+        navigation: {
+          strategy: 'replace-first-header-with-canonical-navigation',
+          destinations: 'preserved from each page header with canonical fallbacks',
+          desktopLayout: 'single-row centered navigation',
+          mobileLayout: 'centered brand with horizontally scrollable links',
+          uniformAcrossHtmlPages: true
+        },
         banner: {
           source: 'public/newyorkhut-header-banner.png',
           delivery: 'same-origin-worker-proxy',
@@ -24,20 +30,14 @@ export default {
           desktopHeight: 'clamp(285px, 18vw, 340px)',
           tabletHeight: 'clamp(210px, 27vw, 270px)',
           mobileHeight: '170px'
-        },
-        homepageHero: {
-          verticalAlignment: 'start',
-          desktopTopPadding: '16px',
-          tabletTopPadding: '14px',
-          mobileTopPadding: '12px'
         }
       }, null, 2), {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v86',
+          'x-newyorkhut-version': 'v87',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-feature': 'homepage-hero-top-alignment-v86'
+          'x-newyorkhut-feature': 'canonical-global-navigation-v87'
         }
       });
     }
