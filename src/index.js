@@ -1,6 +1,6 @@
-import site from './index-v81.js';
+import site from './index-v82.js';
 
-const DEPLOYMENT_MARKER = 'v81-direct-verified-png-banner-2026-08-02-01';
+const DEPLOYMENT_MARKER = 'v82-forced-banner-src-replacement-2026-08-02-01';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,27 +10,27 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v81',
+        version: 'v82',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v81.js',
+        target: 'src/index-v82.js',
         navigation: 'stable-global-navigation',
-        feature: 'direct-verified-png-banner-v81',
+        feature: 'forced-banner-src-replacement-v82',
         banner: {
           source: 'public/newyorkhut-header-banner.png',
-          delivery: 'direct-public-github-png',
-          url: 'https://raw.githubusercontent.com/HollywoodHancock/NEWYORKHUT/main/public/newyorkhut-header-banner.png?v=20260802-03',
+          delivery: 'forced-direct-public-github-png',
+          url: 'https://raw.githubusercontent.com/HollywoodHancock/NEWYORKHUT/main/public/newyorkhut-header-banner.png?v=20260802-04',
           contentType: 'image/png',
           placement: 'below-global-navigation',
-          workerAssetBindingRequired: false
+          replacementStrategy: 'replace-current-src-on-nyh-v76-banner-img'
         }
       }, null, 2), {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v81',
+          'x-newyorkhut-version': 'v82',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-feature': 'direct-verified-png-banner-v81'
+          'x-newyorkhut-feature': 'forced-banner-src-replacement-v82'
         }
       });
     }
