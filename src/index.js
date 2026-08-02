@@ -1,6 +1,6 @@
-import site from './index-v89.js';
+import site from './index-v90.js';
 
-const DEPLOYMENT_MARKER = 'v89-sitewide-layout-seo-normalization-2026-08-02-01';
+const DEPLOYMENT_MARKER = 'v90-deterministic-sitemap-seo-audit-2026-08-02-01';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,34 +10,29 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v89',
+        version: 'v90',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v89.js',
-        feature: 'sitewide-layout-seo-normalization-v89',
+        target: 'src/index-v90.js',
+        feature: 'deterministic-sitemap-seo-audit-v90',
         navigation: 'pre-v87 stable navigation preserved',
         audit: {
-          scope: 'all HTML routes',
-          horizontalOverflowProtection: true,
-          responsiveMediaContainment: true,
-          responsiveTableHandling: true,
-          routeFamilySpacingNormalization: true,
-          existingPageContentPreserved: true,
-          existingNavigationPreserved: true
+          endpoint: '/__seo_audit',
+          source: 'current sitemap URLs rendered through active Worker chain',
+          checks: ['status','content-type','title','title-length','description','canonical','H1-count','viewport','duplicate-titles','duplicate-canonicals']
         },
-        seo: {
-          titlePattern: 'route-specific title derived from page purpose and H1',
-          canonicalPattern: 'https://newyorkhut.com + canonical pathname',
-          openGraphTitleAndUrlSynchronized: true,
-          sitemapContentChanged: false
+        sitemap: {
+          route: '/sitemap.xml',
+          normalization: 'same-origin URLs only; remove query strings, trailing-slash duplicates, and exact duplicates',
+          pageContentChanged: false
         }
       }, null, 2), {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v89',
+          'x-newyorkhut-version': 'v90',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-feature': 'sitewide-layout-seo-normalization-v89'
+          'x-newyorkhut-feature': 'deterministic-sitemap-seo-audit-v90'
         }
       });
     }
