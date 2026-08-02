@@ -1,6 +1,6 @@
-import site from './index-v66.js';
+import site from './index-v67.js';
 
-const DEPLOYMENT_MARKER = 'v66-global-seo-regulatory-center-2026-08-02-01';
+const DEPLOYMENT_MARKER = 'v67-expanded-ask-hut-ai-2026-08-02-01';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,33 +10,37 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v66',
+        version: 'v67',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v66.js',
+        target: 'src/index-v67.js',
         navigation: 'stable-global-navigation',
-        feature: 'global-technical-seo-and-regulatory-center-v66',
-        hub: '/news-and-regulatory-center',
-        seo: {
-          sitemap: '/sitemap.xml',
-          robots: '/robots.txt',
-          htmlSiteMap: '/site-map',
-          metadata: 'canonical-robots-open-graph-twitter',
-          structuredData: 'organization-website-webpage-article-collection-breadcrumb'
-        },
-        guides: [
-          '/news/hut-tax-bulletins-updated-march-2026',
-          '/news/hut-forms-index-updated-june-2026',
-          '/news/hut-interest-rate-july-september-2026',
-          '/news/new-york-hut-repeal-bills-a25-s345'
+        feature: 'expanded-ask-hut-ai-knowledge-base-v67',
+        hub: '/ask-hut-ai',
+        knowledgeEntries: 20,
+        knowledgeCenters: [
+          '/hut-registration-center',
+          '/mt-903-filing-center',
+          '/vehicle-lifecycle',
+          '/audit-and-enforcement-center',
+          '/exemptions-and-special-vehicles',
+          '/forms-library',
+          '/carrier-compliance-center',
+          '/news-and-regulatory-center'
+        ],
+        responseLinks: [
+          'related-guides',
+          'related-tools',
+          'official-source',
+          'nyhut-workflow'
         ]
       }, null, 2), {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v66',
+          'x-newyorkhut-version': 'v67',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-feature': 'global-seo-regulatory-center-v66'
+          'x-newyorkhut-feature': 'expanded-ask-hut-ai-v67'
         }
       });
     }
