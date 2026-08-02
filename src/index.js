@@ -1,6 +1,6 @@
-import site from './index-v56.js';
+import site from './index-v57.js';
 
-const DEPLOYMENT_MARKER = 'v56-complete-hut-tool-center-2026-08-02-01';
+const DEPLOYMENT_MARKER = 'v57-exempt-vehicle-guide-and-wizard-next-steps-2026-08-02-01';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,12 +10,13 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v56',
+        version: 'v57',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v56.js',
+        target: 'src/index-v57.js',
         navigation: 'stable-global-navigation',
-        toolCenter: 'complete-v56',
+        toolCenter: 'complete-v56-plus-contextual-guidance-v57',
+        feature: 'exempt-vehicle-guide-and-permit-wizard-next-steps',
         tools: [
           'hut-tax-estimator',
           'hut-rate-lookup',
@@ -27,9 +28,9 @@ export default {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v56',
+          'x-newyorkhut-version': 'v57',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-tool-center': 'complete-v56'
+          'x-newyorkhut-tool-center': 'contextual-guidance-v57'
         }
       });
     }
