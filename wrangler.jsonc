@@ -4,8 +4,11 @@
   "main": "src/index.js",
   "compatibility_date": "2026-07-20",
   "workers_dev": true,
+  "assets": {
+    "directory": "./public"
+  },
   "vars": {
-    "DEPLOY_RELEASE": "v52-nav-buttons-2026-07-21-02"
+    "DEPLOY_RELEASE": "v69-global-header-banner-2026-08-02-01"
   },
   "observability": {
     "enabled": true
