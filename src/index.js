@@ -1,6 +1,6 @@
-import site from './index-v62.js';
+import site from './index-v63.js';
 
-const DEPLOYMENT_MARKER = 'v62-audit-enforcement-center-2026-08-02-01';
+const DEPLOYMENT_MARKER = 'v63-exemptions-special-vehicles-2026-08-02-01';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,28 +10,30 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v62',
+        version: 'v63',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v62.js',
+        target: 'src/index-v63.js',
         navigation: 'stable-global-navigation',
-        feature: 'audit-enforcement-center-and-guides-v62',
-        hub: '/audit-and-enforcement-center',
+        feature: 'exemptions-special-vehicles-center-and-guides-v63',
+        hub: '/exemptions-and-special-vehicles',
         guides: [
-          '/learn/new-york-hut-audits',
-          '/learn/hut-records-you-must-keep',
-          '/learn/common-new-york-hut-audit-findings',
-          '/learn/new-york-hut-penalties',
-          '/learn/how-to-respond-to-a-hut-audit',
-          '/learn/hut-audit-checklist'
+          '/learn/new-york-hut-farm-vehicle-exemption',
+          '/learn/government-vehicle-hut-exemption',
+          '/learn/recreational-vehicle-hut-exemption',
+          '/learn/dealer-and-transporter-plate-hut-exemption',
+          '/learn/household-goods-mover-hut-exemption',
+          '/learn/special-mobile-equipment-and-road-building-machines',
+          '/learn/new-york-hut-excluded-vehicles',
+          '/learn/new-york-hut-exempt-vehicles'
         ]
       }, null, 2), {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v62',
+          'x-newyorkhut-version': 'v63',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-feature': 'audit-enforcement-center-v62'
+          'x-newyorkhut-feature': 'exemptions-special-vehicles-v63'
         }
       });
     }
