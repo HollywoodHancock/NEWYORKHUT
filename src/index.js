@@ -1,6 +1,6 @@
-import site from './index-v59.js';
+import site from './index-v60.js';
 
-const DEPLOYMENT_MARKER = 'v59-vehicle-lifecycle-center-2026-08-02-01';
+const DEPLOYMENT_MARKER = 'v60-mt903-filing-center-2026-08-02-01';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,31 +10,28 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v59',
+        version: 'v60',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v59.js',
+        target: 'src/index-v60.js',
         navigation: 'stable-global-navigation',
-        toolCenter: 'complete-v56-plus-contextual-guidance-v57',
-        feature: 'vehicle-lifecycle-center-and-guides-v59',
-        hub: '/vehicle-lifecycle',
+        feature: 'mt903-filing-center-and-core-guides-v60',
+        hub: '/mt-903-filing-center',
         guides: [
-          '/learn/buying-a-new-york-hut-permitted-truck',
-          '/learn/selling-or-transferring-a-new-york-hut-permitted-truck',
-          '/learn/replacing-a-new-york-hut-truck',
-          '/learn/adding-a-vehicle-to-your-new-york-hut-account',
-          '/learn/removing-a-vehicle-from-your-new-york-hut-account',
-          '/learn/changing-your-registered-gross-vehicle-weight',
-          '/learn/lost-new-york-hut-certificate',
-          '/learn/lost-new-york-hut-decal'
+          '/learn/what-is-form-mt-903',
+          '/learn/who-must-file-mt-903',
+          '/learn/mt-903-filing-deadlines-and-frequency',
+          '/learn/new-york-hut-taxable-miles',
+          '/learn/hut-recordkeeping-requirements',
+          '/learn/amended-final-and-no-activity-mt-903-returns'
         ]
       }, null, 2), {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v59',
+          'x-newyorkhut-version': 'v60',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-feature': 'vehicle-lifecycle-center-v59'
+          'x-newyorkhut-feature': 'mt903-filing-center-v60'
         }
       });
     }
