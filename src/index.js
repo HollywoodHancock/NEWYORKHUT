@@ -1,6 +1,6 @@
-import site from './index-v55.js';
+import site from './index-v56.js';
 
-const DEPLOYMENT_MARKER = 'v55-mt903-quarterly-planning-2026-07-22-01';
+const DEPLOYMENT_MARKER = 'v56-complete-hut-tool-center-2026-08-02-01';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,21 +10,26 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v55',
+        version: 'v56',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v55.js',
-        navigation: 'legacy-css-override-visible-buttons-v53',
-        tool: 'mt903-quarterly-planning-v55',
-        retiredTool: 'trip-cost-estimator-redirected'
+        target: 'src/index-v56.js',
+        navigation: 'stable-global-navigation',
+        toolCenter: 'complete-v56',
+        tools: [
+          'hut-tax-estimator',
+          'hut-rate-lookup',
+          'hut-permit-requirement',
+          'mt903-due-date',
+          'hut-penalty-estimator'
+        ]
       }, null, 2), {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v55',
+          'x-newyorkhut-version': 'v56',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-navigation': 'legacy-css-override-visible-buttons-v53',
-          'x-newyorkhut-tool': 'mt903-quarterly-planning-v55'
+          'x-newyorkhut-tool-center': 'complete-v56'
         }
       });
     }
