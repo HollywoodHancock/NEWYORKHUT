@@ -51,7 +51,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          expected='v52-visible-navigation-buttons-2026-07-21-02'
+          expected='v94-authority-intent-and-nyhut-referral-tracking-2026-08-14-01'
           for attempt in {1..12}; do
             body=$(curl --silent --show-error --fail --max-time 15 https://newyorkhut.com/__deploy_probe || true)
             if echo "$body" | grep -q "$expected"; then
@@ -65,6 +65,31 @@ jobs:
             fi
             sleep 10
           done
+
+      - name: Verify SEO boundary and sitemap
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          sitemap_headers=$(mktemp)
+          sitemap_body=$(mktemp)
+          curl --silent --show-error --fail --max-time 15 -D "$sitemap_headers" -o "$sitemap_body" https://newyorkhut.com/sitemap.xml
+          grep -qi '^content-type: application/xml' "$sitemap_headers"
+          if grep -qi '^x-robots-tag:.*noindex' "$sitemap_headers"; then
+            echo "FAILED: sitemap is carrying X-Robots-Tag noindex"
+            exit 1
+          fi
+          grep -q '<urlset' "$sitemap_body"
+          echo "VERIFIED: sitemap is XML and not noindexed"
+
+          services=$(curl --silent --show-error --fail --max-time 15 https://newyorkhut.com/services)
+          echo "$services" | grep -q '<title>New York HUT Service Options Explained | NewYorkHUT.com</title>'
+          echo "VERIFIED: services page uses informational intent title"
+
+          home=$(curl --silent --show-error --fail --max-time 15 https://newyorkhut.com/)
+          echo "$home" | grep -q 'utm_source=newyorkhut.com'
+          echo "$home" | grep -q 'utm_campaign=authority_site'
+          echo "VERIFIED: NYHUT outbound links carry referral attribution"
 
       - name: Verify public navigation routes
         shell: bash
