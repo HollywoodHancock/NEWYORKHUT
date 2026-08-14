@@ -1,6 +1,6 @@
-import site from './index-v99.js';
+import site from './index-v100.js';
 
-const DEPLOYMENT_MARKER = 'v99-trim-form-detail-pages-from-index-2026-08-14';
+const DEPLOYMENT_MARKER = 'v100-recordkeeping-cannibalization-consolidation-2026-08-14';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,11 +10,11 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v99',
+        version: 'v100',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v99.js',
-        feature: 'trim-form-detail-pages-from-index-v99',
+        target: 'src/index-v100.js',
+        feature: 'consolidate-recordkeeping-cannibalization-v100',
         seo: {
           role: 'informational authority and education',
           transactionDomain: 'https://www.nyhut.com/order',
@@ -26,6 +26,8 @@ export default {
           legacyLeadsEndpointStatus: 410,
           formDetailPagesNoindex: 11,
           formsLibraryIndexable: true,
+          recordkeepingCanonical: '/learn/hut-recordkeeping-requirements',
+          recordkeepingRedirect: '/learn/hut-records-you-must-keep',
           utmSource: 'newyorkhut.com',
           utmMedium: 'referral',
           utmCampaign: 'authority_site',
@@ -33,7 +35,7 @@ export default {
         },
         sitemap: {
           route: '/sitemap.xml',
-          urlCount: 65,
+          urlCount: 64,
           contentType: 'application/xml; charset=UTF-8',
           xRobotsTagRemoved: true
         }
@@ -41,9 +43,9 @@ export default {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v99',
+          'x-newyorkhut-version': 'v100',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-feature': 'trim-form-detail-pages-from-index-v99'
+          'x-newyorkhut-feature': 'consolidate-recordkeeping-cannibalization-v100'
         }
       });
     }
