@@ -1,6 +1,6 @@
-import site from './index-v97.js';
+import site from './index-v98.js';
 
-const DEPLOYMENT_MARKER = 'v97-direct-nyhut-order-destination-2026-08-14';
+const DEPLOYMENT_MARKER = 'v98-fix-about-and-legacy-api-5xx-2026-08-14';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,11 +10,11 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v97',
+        version: 'v98',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v97.js',
-        feature: 'direct-nyhut-order-destination-v97',
+        target: 'src/index-v98.js',
+        feature: 'fix-about-and-legacy-api-5xx-v98',
         seo: {
           role: 'informational authority and education',
           transactionDomain: 'https://www.nyhut.com/order',
@@ -22,6 +22,8 @@ export default {
           authorityClusterLinks: true,
           intentSpecificConversionHandoffs: true,
           directOrderDestination: true,
+          aboutRouteFixed: true,
+          legacyLeadsEndpointStatus: 410,
           utmSource: 'newyorkhut.com',
           utmMedium: 'referral',
           utmCampaign: 'authority_site',
@@ -37,9 +39,9 @@ export default {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v97',
+          'x-newyorkhut-version': 'v98',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-feature': 'direct-nyhut-order-destination-v97'
+          'x-newyorkhut-feature': 'fix-about-and-legacy-api-5xx-v98'
         }
       });
     }
