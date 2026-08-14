@@ -3,6 +3,13 @@ import site from './index-v93.js';
 const VERSION = 'v94';
 const FEATURE = 'authority-intent-and-nyhut-referral-tracking-v94';
 
+const ALIAS_REDIRECTS = {
+  '/knowledge-center': '/learn',
+  '/new-york-hut-knowledge-center': '/learn',
+  '/hut-guide': '/new-york-hut-guide',
+  '/all-pages': '/site-map'
+};
+
 const TITLE_OVERRIDES = {
   '/services': 'New York HUT Service Options Explained | NewYorkHUT.com',
   '/hut-registration-center': 'New York HUT Registration Guide & Requirements | NewYorkHUT.com',
@@ -101,16 +108,36 @@ function addAuthoritySignal(html) {
   return html.replace('</head>', `${marker}</head>`);
 }
 
+function trimHumanDirectoryFromSitemap(xml) {
+  return xml.replace(/\s*<url><loc>https:\/\/newyorkhut\.com\/site-map<\/loc><\/url>\s*/i, '\n');
+}
+
 export default {
   async fetch(request, env, ctx) {
-    const response = await site.fetch(request, env, ctx);
-    const headers = new Headers(response.headers);
-    const type = headers.get('content-type') || '';
     const url = new URL(request.url);
     const path = normalizedPath(url);
 
+    if (ALIAS_REDIRECTS[path]) {
+      const target = new URL(ALIAS_REDIRECTS[path], url.origin);
+      return Response.redirect(target.toString(), 301);
+    }
+
+    const response = await site.fetch(request, env, ctx);
+    const headers = new Headers(response.headers);
+    const type = headers.get('content-type') || '';
+
     headers.set('x-newyorkhut-version', VERSION);
     headers.set('x-newyorkhut-feature', FEATURE);
+
+    if (path === '/sitemap.xml' && type.includes('xml')) {
+      const xml = trimHumanDirectoryFromSitemap(await response.text());
+      headers.set('x-sitemap-url-count', '76');
+      return new Response(xml, {
+        status: response.status,
+        statusText: response.statusText,
+        headers
+      });
+    }
 
     if (!type.includes('text/html')) {
       return new Response(response.body, {
@@ -130,6 +157,10 @@ export default {
     }
     html = trackNyhutLinks(html, path);
     html = addAuthoritySignal(html);
+
+    if (path === '/site-map') {
+      headers.set('x-robots-tag', 'noindex, follow');
+    }
 
     return new Response(html, {
       status: response.status,
