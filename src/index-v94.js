@@ -7,7 +7,8 @@ const ALIAS_REDIRECTS = {
   '/knowledge-center': '/learn',
   '/new-york-hut-knowledge-center': '/learn',
   '/hut-guide': '/new-york-hut-guide',
-  '/all-pages': '/site-map'
+  '/all-pages': '/site-map',
+  '/learn/who-needs-a-new-york-hut': '/learn/who-needs-a-new-york-hut-permit'
 };
 
 const TITLE_OVERRIDES = {
