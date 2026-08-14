@@ -12,23 +12,61 @@ const TITLE_OVERRIDES = {
   '/carrier-compliance-center': 'New York HUT Carrier Compliance Guide | NewYorkHUT.com'
 };
 
+const DESCRIPTION_OVERRIDES = {
+  '/services': 'Understand New York HUT registration, filing, vehicle, temporary permit, and compliance service options before choosing the right next step.',
+  '/hut-registration-center': 'Learn New York HUT registration requirements, what information carriers need, and when a HUT credential may be required.',
+  '/mt-903-filing-center': 'Learn New York HUT MT-903 filing requirements, reporting basics, deadlines, records, and common compliance questions.',
+  '/vehicle-lifecycle': 'Learn how New York HUT requirements apply when adding, replacing, selling, leasing, or changing vehicles in a fleet.',
+  '/audit-and-enforcement-center': 'Learn about New York HUT records, audits, enforcement, penalties, and practical compliance considerations for carriers.',
+  '/carrier-compliance-center': 'A practical guide to New York HUT carrier compliance, registration, filing, vehicle credentials, records, and ongoing obligations.'
+};
+
 function normalizedPath(url) {
   return url.pathname.replace(/\/+$/, '') || '/';
 }
 
+function escapeText(value) {
+  return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function escapeAttr(value) {
+  return value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 function replaceTitle(html, title) {
-  const safe = title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const safe = escapeText(title);
   return /<title\b[^>]*>[\s\S]*?<\/title>/i.test(html)
     ? html.replace(/<title\b[^>]*>[\s\S]*?<\/title>/i, `<title>${safe}</title>`)
     : html.replace(/<head\b[^>]*>/i, m => `${m}<title>${safe}</title>`);
 }
 
-function replaceOgTitle(html, title) {
-  const safe = title.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
-  const tag = `<meta property="og:title" content="${safe}">`;
-  return /<meta\b[^>]*property=(?:"og:title"|'og:title')[^>]*>/i.test(html)
-    ? html.replace(/<meta\b[^>]*property=(?:"og:title"|'og:title')[^>]*>/i, tag)
+function replaceMeta(html, selectorPattern, tag) {
+  return selectorPattern.test(html)
+    ? html.replace(selectorPattern, tag)
     : html.replace('</head>', `${tag}</head>`);
+}
+
+function replaceOgTitle(html, title) {
+  const safe = escapeAttr(title);
+  return replaceMeta(
+    html,
+    /<meta\b[^>]*property=(?:"og:title"|'og:title')[^>]*>/i,
+    `<meta property="og:title" content="${safe}">`
+  );
+}
+
+function replaceDescription(html, description) {
+  const safe = escapeAttr(description);
+  html = replaceMeta(
+    html,
+    /<meta\b(?=[^>]*name=(?:"description"|'description'))[^>]*>/i,
+    `<meta name="description" content="${safe}">`
+  );
+  return replaceMeta(
+    html,
+    /<meta\b(?=[^>]*property=(?:"og:description"|'og:description'))[^>]*>/i,
+    `<meta property="og:description" content="${safe}">`
+  );
 }
 
 function trackedNyhutUrl(rawHref, sourcePath) {
@@ -87,10 +125,11 @@ export default {
       html = replaceTitle(html, TITLE_OVERRIDES[path]);
       html = replaceOgTitle(html, TITLE_OVERRIDES[path]);
     }
+    if (DESCRIPTION_OVERRIDES[path]) {
+      html = replaceDescription(html, DESCRIPTION_OVERRIDES[path]);
+    }
     html = trackNyhutLinks(html, path);
     html = addAuthoritySignal(html);
-
-    headers.set('cache-control', 'no-store, no-cache, must-revalidate, max-age=0');
 
     return new Response(html, {
       status: response.status,
