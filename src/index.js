@@ -1,6 +1,6 @@
-import site from './index-v101.js';
+import site from './index-v102.js';
 
-const DEPLOYMENT_MARKER = 'v101-hub-to-article-crawl-paths-2026-08-14';
+const DEPLOYMENT_MARKER = 'v102-article-to-hub-topic-links-2026-08-14';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,17 +10,18 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v101',
+        version: 'v102',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v101.js',
-        feature: 'hub-to-article-crawl-paths-v101',
+        target: 'src/index-v102.js',
+        feature: 'article-to-hub-topic-links-v102',
         seo: {
           role: 'informational authority and education',
           transactionDomain: 'https://www.nyhut.com/order',
           referralTracking: true,
           authorityClusterLinks: true,
           hubToArticleCrawlPaths: true,
+          articleToHubTopicLinks: true,
           intentSpecificConversionHandoffs: true,
           directOrderDestination: true,
           aboutRouteFixed: true,
@@ -44,9 +45,9 @@ export default {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v101',
+          'x-newyorkhut-version': 'v102',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-feature': 'hub-to-article-crawl-paths-v101'
+          'x-newyorkhut-feature': 'article-to-hub-topic-links-v102'
         }
       });
     }
