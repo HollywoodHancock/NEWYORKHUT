@@ -1,6 +1,6 @@
 import site from './index-v94.js';
 
-const DEPLOYMENT_MARKER = 'v94-authority-intent-and-nyhut-referral-tracking-2026-08-14-01';
+const DEPLOYMENT_MARKER = 'v94-authority-intent-and-nyhut-referral-tracking-2026-08-14-02';
 
 export default {
   async fetch(request, env, ctx) {
@@ -21,11 +21,13 @@ export default {
           referralTracking: true,
           utmSource: 'newyorkhut.com',
           utmMedium: 'referral',
-          utmCampaign: 'authority_site'
+          utmCampaign: 'authority_site',
+          legacyAliasRedirects: 4,
+          humanSiteMapNoindex: true
         },
         sitemap: {
           route: '/sitemap.xml',
-          urlCount: 77,
+          urlCount: 76,
           contentType: 'application/xml; charset=UTF-8',
           xRobotsTagRemoved: true
         }
