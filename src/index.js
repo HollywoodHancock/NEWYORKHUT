@@ -1,6 +1,6 @@
-import site from './index-v95.js';
+import site from './index-v96.js';
 
-const DEPLOYMENT_MARKER = 'v95-authority-cluster-internal-links-and-conversion-2026-08-14';
+const DEPLOYMENT_MARKER = 'v96-intent-specific-nyhut-conversion-handoff-2026-08-14';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,17 +10,17 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v95',
+        version: 'v96',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v95.js',
-        feature: 'authority-cluster-internal-links-and-conversion-v95',
+        target: 'src/index-v96.js',
+        feature: 'intent-specific-nyhut-conversion-handoff-v96',
         seo: {
           role: 'informational authority and education',
           transactionDomain: 'https://www.nyhut.com/',
           referralTracking: true,
           authorityClusterLinks: true,
-          priorityPagesEnhanced: 11,
+          intentSpecificConversionHandoffs: true,
           utmSource: 'newyorkhut.com',
           utmMedium: 'referral',
           utmCampaign: 'authority_site',
@@ -36,9 +36,9 @@ export default {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v95',
+          'x-newyorkhut-version': 'v96',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-feature': 'authority-cluster-internal-links-and-conversion-v95'
+          'x-newyorkhut-feature': 'intent-specific-nyhut-conversion-handoff-v96'
         }
       });
     }
