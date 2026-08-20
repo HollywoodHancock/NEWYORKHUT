@@ -2,7 +2,7 @@ import site from './index-v96.js';
 
 const VERSION = 'v97';
 const FEATURE = 'direct-nyhut-order-destination-v97';
-const ORDER_PATH = '/order';
+const ORDER_PATH = '/ny-hut-permit';
 
 function pathOf(request) {
   return new URL(request.url).pathname.replace(/\/+$/, '') || '/';
@@ -10,8 +10,8 @@ function pathOf(request) {
 
 function directOrderUrl(sourcePath, rawHref) {
   try {
-    const old = new URL(rawHref.replace(/&amp;/g, '&'), 'https://www.nyhut.com');
-    const u = new URL(`https://www.nyhut.com${ORDER_PATH}`);
+    const old = new URL(rawHref.replace(/&amp;/g, '&'), 'https://nyhut.com');
+    const u = new URL(`https://nyhut.com${ORDER_PATH}`);
     for (const [key, value] of old.searchParams) u.searchParams.set(key, value);
     if (!u.searchParams.has('utm_source')) u.searchParams.set('utm_source', 'newyorkhut.com');
     if (!u.searchParams.has('utm_medium')) u.searchParams.set('utm_medium', 'referral');
