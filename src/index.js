@@ -17,7 +17,7 @@ export default {
         feature: 'article-to-hub-topic-links-v102',
         seo: {
           role: 'informational authority and education',
-          transactionDomain: 'https://www.nyhut.com/order',
+          transactionDomain: 'https://nyhut.com/ny-hut-permit',
           referralTracking: true,
           authorityClusterLinks: true,
           hubToArticleCrawlPaths: true,
