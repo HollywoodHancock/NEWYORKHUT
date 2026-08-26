@@ -12,11 +12,12 @@ for (const file of ['wrangler.json', 'wrangler.jsonc']) {
 }
 
 const entry = fs.readFileSync('src/index.js', 'utf8');
-if (!/import\s+site\s+from\s+['"]\.\/index-v104\.js['"]/.test(entry)) {
-  fail('src/index.js must point to the v104 production implementation');
+if (!/import\s+site\s+from\s+['"]\.\/index-v105\.js['"]/.test(entry)) {
+  fail('src/index.js must point to the v105 production implementation');
 }
 
 const navigation = fs.readFileSync('src/index-v104.js', 'utf8');
+const topicConsolidation = fs.readFileSync('src/index-v105.js', 'utf8');
 for (const required of [
   'id="nyh-global-header"',
   'aria-label="Primary navigation"',
@@ -26,6 +27,16 @@ for (const required of [
   'universal-navigation-normalization-v104'
 ]) {
   if (!navigation.includes(required)) fail(`src/index-v104.js is missing universal navigation safeguard: ${required}`);
+}
+
+for (const required of [
+  'New York HUT Permit Guide: Requirements, Cost & Registration',
+  'New York HUT Permit: Complete Guide',
+  'nyh-v105-topic-parent',
+  '/learn/who-needs-a-new-york-hut-permit',
+  'new-york-hut-permit-topic-consolidation-v105'
+]) {
+  if (!topicConsolidation.includes(required)) fail(`src/index-v105.js is missing topic consolidation safeguard: ${required}`);
 }
 
 const repair = fs.readFileSync('src/index-v103.js', 'utf8');
