@@ -1,6 +1,13 @@
+import fs from 'node:fs';
+
 const base = process.env.SITE_URL || 'https://newyorkhut.com';
 const routes = ['/', '/learn', '/tools', '/services', '/new-york-hut-guide', '/terms', '/privacy-policy'];
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+const entry = fs.readFileSync('src/index.js', 'utf8');
+const targetMatch = entry.match(/import\s+site\s+from\s+['"]\.\/(index-v(\d+)\.js)['"]/);
+if (!targetMatch) throw new Error('Unable to determine active production target from src/index.js');
+const expectedTarget = `src/${targetMatch[1]}`;
+const expectedVersion = `v${targetMatch[2]}`;
 
 async function get(path) {
   let lastError;
@@ -20,7 +27,7 @@ async function get(path) {
 
 const probe = await get('/__deploy_probe');
 const data = JSON.parse(probe.body);
-for (const [key, expected] of Object.entries({application: 'NewYorkHUT.com', version: 'v103', entrypoint: 'src/index.js', target: 'src/index-v103.js'})) {
+for (const [key, expected] of Object.entries({application: 'NewYorkHUT.com', version: expectedVersion, entrypoint: 'src/index.js', target: expectedTarget})) {
   if (data[key] !== expected) throw new Error(`Probe ${key} expected ${expected}, received ${data[key]}`);
 }
 
@@ -30,7 +37,7 @@ for (const route of routes) {
   if (body.includes('body>header:not(#nyh47-header),body>nav:not(.nyh47-menu),body>footer:not(#nyh47-footer){display:none!important}')) {
     throw new Error(`${route} still contains the unmodified legacy header-hiding rule`);
   }
-  if (response.headers.get('x-newyorkhut-version') !== 'v103') throw new Error(`${route} is not served by v103`);
+  if (response.headers.get('x-newyorkhut-version') !== expectedVersion) throw new Error(`${route} is not served by ${expectedVersion}`);
   console.log(`PASS ${route}`);
 }
 
