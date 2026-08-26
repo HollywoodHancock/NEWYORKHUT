@@ -25,8 +25,23 @@ async function get(path) {
   throw lastError;
 }
 
-const probe = await get('/__deploy_probe');
-const data = JSON.parse(probe.body);
+async function getExpectedProbe() {
+  let lastError;
+  for (let attempt = 1; attempt <= 16; attempt++) {
+    try {
+      const probe = await get('/__deploy_probe');
+      const data = JSON.parse(probe.body);
+      if (data.version === expectedVersion && data.target === expectedTarget) return {probe, data};
+      lastError = new Error(`Deployment is ${data.version}/${data.target}; waiting for ${expectedVersion}/${expectedTarget}`);
+    } catch (error) {
+      lastError = error;
+    }
+    await sleep(15_000);
+  }
+  throw lastError;
+}
+
+const {probe, data} = await getExpectedProbe();
 for (const [key, expected] of Object.entries({application: 'NewYorkHUT.com', version: expectedVersion, entrypoint: 'src/index.js', target: expectedTarget})) {
   if (data[key] !== expected) throw new Error(`Probe ${key} expected ${expected}, received ${data[key]}`);
 }
