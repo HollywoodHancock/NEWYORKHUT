@@ -12,8 +12,21 @@ for (const file of ['wrangler.json', 'wrangler.jsonc']) {
 }
 
 const entry = fs.readFileSync('src/index.js', 'utf8');
-if (!/import\s+site\s+from\s+['"]\.\/index-v53\.js['"]/.test(entry)) {
-  fail('src/index.js must point to the verified v53 production implementation until an intentional version advance');
+if (!/import\s+site\s+from\s+['"]\.\/index-v103\.js['"]/.test(entry)) {
+  fail('src/index.js must point to the v103 production implementation');
+}
+
+const repair = fs.readFileSync('src/index-v103.js', 'utf8');
+for (const required of [
+  "const CANONICAL_ORIGIN = 'https://newyorkhut.com'",
+  "url.hostname !== 'newyorkhut.com'",
+  "['/what-is-hut', '/new-york-hut-guide']",
+  "['/new-york-hut-weight-threshold', '/learn/how-gvw-affects-your-hut-tax']",
+  "['/learn/adding-a-vehicle-to-your-new-york-hut-account', '/learn/adding-a-vehicle-to-new-york-hut']",
+  "if (path === '/terms') return termsPage()",
+  "if (path === '/privacy-policy') return privacyPage()"
+]) {
+  if (!repair.includes(required)) fail(`src/index-v103.js is missing SEO repair safeguard: ${required}`);
 }
 
 const active = fs.readFileSync('src/index-v53.js', 'utf8');

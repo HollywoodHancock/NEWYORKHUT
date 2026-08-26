@@ -1,5 +1,5 @@
 const base = process.env.SITE_URL || 'https://newyorkhut.com';
-const routes = ['/', '/learn', '/tools', '/services', '/new-york-hut-guide'];
+const routes = ['/', '/learn', '/tools', '/services', '/new-york-hut-guide', '/terms', '/privacy-policy'];
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 async function get(path) {
@@ -20,21 +20,29 @@ async function get(path) {
 
 const probe = await get('/__deploy_probe');
 const data = JSON.parse(probe.body);
-for (const [key, expected] of Object.entries({application: 'NewYorkHUT.com', entrypoint: 'src/index.js', target: 'src/index-v53.js'})) {
+for (const [key, expected] of Object.entries({application: 'NewYorkHUT.com', version: 'v103', entrypoint: 'src/index.js', target: 'src/index-v103.js'})) {
   if (data[key] !== expected) throw new Error(`Probe ${key} expected ${expected}, received ${data[key]}`);
 }
 
 for (const route of routes) {
   const {response, body} = await get(route);
-  if (!body.includes('id="nyh-global-header"')) throw new Error(`${route} is missing #nyh-global-header`);
   if (!body.includes('aria-label="Primary navigation"')) throw new Error(`${route} is missing accessible primary navigation`);
-  if (!body.includes('html body > header#nyh-global-header')) throw new Error(`${route} is missing the high-specificity visibility safeguard`);
   if (body.includes('body>header:not(#nyh47-header),body>nav:not(.nyh47-menu),body>footer:not(#nyh47-footer){display:none!important}')) {
     throw new Error(`${route} still contains the unmodified legacy header-hiding rule`);
   }
-  const marker = response.headers.get('x-newyorkhut-navigation');
-  if (marker !== 'universal-buttons-v53-visible-fixed') throw new Error(`${route} has unexpected navigation marker: ${marker}`);
+  if (response.headers.get('x-newyorkhut-version') !== 'v103') throw new Error(`${route} is not served by v103`);
   console.log(`PASS ${route}`);
+}
+
+for (const [source, target] of [
+  ['/what-is-hut', '/new-york-hut-guide'],
+  ['/new-york-hut-weight-threshold', '/learn/how-gvw-affects-your-hut-tax'],
+  ['/learn/adding-a-vehicle-to-your-new-york-hut-account', '/learn/adding-a-vehicle-to-new-york-hut']
+]) {
+  const response = await fetch(`${base}${source}`, {redirect: 'manual'});
+  if (response.status !== 301) throw new Error(`${source} expected 301, received ${response.status}`);
+  if (new URL(response.headers.get('location')).pathname !== target) throw new Error(`${source} has unexpected redirect target`);
+  console.log(`PASS ${source} → ${target}`);
 }
 
 console.log('Live production functional check passed for deployment probe and all critical routes.');

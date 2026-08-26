@@ -2,7 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "newyorkhut",
   "main": "src/index.js",
-  "compatibility_date": "2026-07-20",
+  "compatibility_date": "2026-08-26",
   "workers_dev": true,
   "assets": {
     "directory": "./public/",
@@ -10,7 +10,7 @@
     "run_worker_first": true
   },
   "vars": {
-    "DEPLOY_RELEASE": "v80-explicit-static-asset-banner-2026-08-02-01"
+    "DEPLOY_RELEASE": "v103-canonical-host-and-indexing-repair-2026-08-26"
   },
   "observability": {
     "enabled": true

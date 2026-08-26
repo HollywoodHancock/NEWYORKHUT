@@ -1,6 +1,6 @@
-import site from './index-v102.js';
+import site from './index-v103.js';
 
-const DEPLOYMENT_MARKER = 'v102-article-to-hub-topic-links-2026-08-14';
+const DEPLOYMENT_MARKER = 'v103-canonical-host-and-indexing-repair-2026-08-26';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,11 +10,11 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v102',
+        version: 'v103',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v102.js',
-        feature: 'article-to-hub-topic-links-v102',
+        target: 'src/index-v103.js',
+        feature: 'canonical-host-and-indexing-repair-v103',
         seo: {
           role: 'informational authority and education',
           transactionDomain: 'https://nyhut.com/ny-hut-permit',
@@ -33,7 +33,11 @@ export default {
           utmSource: 'newyorkhut.com',
           utmMedium: 'referral',
           utmCampaign: 'authority_site',
-          humanSiteMapNoindex: true
+          humanSiteMapNoindex: true,
+          canonicalHostEnforced: true,
+          legacyFiveXxRoutesFixed: true,
+          addingVehicleDuplicateRedirected: true,
+          searchAndDownloadsNoindex: true
         },
         sitemap: {
           route: '/sitemap.xml',
@@ -45,9 +49,9 @@ export default {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v102',
+          'x-newyorkhut-version': 'v103',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-feature': 'article-to-hub-topic-links-v102'
+          'x-newyorkhut-feature': 'canonical-host-and-indexing-repair-v103'
         }
       });
     }
