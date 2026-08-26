@@ -10,7 +10,7 @@
     "run_worker_first": true
   },
   "vars": {
-    "DEPLOY_RELEASE": "v103-canonical-host-and-indexing-repair-2026-08-26"
+    "DEPLOY_RELEASE": "v104-universal-navigation-normalization-2026-08-26"
   },
   "observability": {
     "enabled": true

@@ -1,6 +1,6 @@
-import site from './index-v103.js';
+import site from './index-v104.js';
 
-const DEPLOYMENT_MARKER = 'v103-canonical-host-and-indexing-repair-2026-08-26';
+const DEPLOYMENT_MARKER = 'v104-universal-navigation-normalization-2026-08-26';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,11 +10,11 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v103',
+        version: 'v104',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v103.js',
-        feature: 'canonical-host-and-indexing-repair-v103',
+        target: 'src/index-v104.js',
+        feature: 'universal-navigation-normalization-v104',
         seo: {
           role: 'informational authority and education',
           transactionDomain: 'https://nyhut.com/ny-hut-permit',
@@ -37,7 +37,8 @@ export default {
           canonicalHostEnforced: true,
           legacyFiveXxRoutesFixed: true,
           addingVehicleDuplicateRedirected: true,
-          searchAndDownloadsNoindex: true
+          searchAndDownloadsNoindex: true,
+          universalNavigationNormalized: true
         },
         sitemap: {
           route: '/sitemap.xml',
@@ -49,9 +50,9 @@ export default {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v103',
+          'x-newyorkhut-version': 'v104',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-feature': 'canonical-host-and-indexing-repair-v103'
+          'x-newyorkhut-feature': 'universal-navigation-normalization-v104'
         }
       });
     }
