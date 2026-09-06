@@ -1,6 +1,6 @@
-import site from './index-v105.js';
+import site from './index-v106.js';
 
-const DEPLOYMENT_MARKER = 'v105-new-york-hut-permit-topic-consolidation-2026-08-26';
+const DEPLOYMENT_MARKER = 'v106-intent-specific-cross-domain-funnel-2026-09-06';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,11 +10,11 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v105',
+        version: 'v106',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v105.js',
-        feature: 'new-york-hut-permit-topic-consolidation-v105',
+        target: 'src/index-v106.js',
+        feature: 'intent-specific-cross-domain-funnel-v106',
         seo: {
           role: 'informational authority and education',
           transactionDomain: 'https://nyhut.com/ny-hut-permit',
@@ -23,6 +23,7 @@ export default {
           hubToArticleCrawlPaths: true,
           articleToHubTopicLinks: true,
           intentSpecificConversionHandoffs: true,
+          intentSpecificCommercialDestinations: true,
           directOrderDestination: true,
           aboutRouteFixed: true,
           legacyLeadsEndpointStatus: 410,
@@ -52,9 +53,9 @@ export default {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v105',
+          'x-newyorkhut-version': 'v106',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-feature': 'new-york-hut-permit-topic-consolidation-v105'
+          'x-newyorkhut-feature': 'intent-specific-cross-domain-funnel-v106'
         }
       });
     }
