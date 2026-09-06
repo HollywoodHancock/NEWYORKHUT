@@ -1,6 +1,6 @@
 import site from './index-v106.js';
 
-const DEPLOYMENT_MARKER = 'v106-intent-specific-cross-domain-funnel-2026-09-06';
+const DEPLOYMENT_MARKER = 'v106-production-redeploy-2026-09-06-r2';
 
 export default {
   async fetch(request, env, ctx) {
