@@ -1,6 +1,6 @@
-import site from './index-v107.js';
+import site from './index-v108.js';
 
-const DEPLOYMENT_MARKER = 'v107-expanded-intent-funnel-2026-09-06';
+const DEPLOYMENT_MARKER = 'v108-high-intent-funnel-and-temporary-cutoff-2026-09-06';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,11 +10,11 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v107',
+        version: 'v108',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v107.js',
-        feature: 'expanded-intent-specific-funnel-v107',
+        target: 'src/index-v108.js',
+        feature: 'high-intent-funnel-and-temporary-cutoff-v108',
         seo: {
           role: 'informational authority and education',
           transactionDomain: 'https://nyhut.com/ny-hut-permit',
@@ -25,7 +25,8 @@ export default {
           intentSpecificConversionHandoffs: true,
           intentSpecificCommercialDestinations: true,
           closureCancellationSalesHandoffsSuppressed: true,
-          directOrderDestination: true,
+          temporaryPermitCutoffEastern: '13:30',
+          temporaryPermitSameDayGuaranteed: false,
           canonicalHostEnforced: true,
           primaryPermitGuideConsolidated: true
         },
@@ -39,9 +40,9 @@ export default {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v107',
+          'x-newyorkhut-version': 'v108',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-feature': 'expanded-intent-specific-funnel-v107'
+          'x-newyorkhut-feature': 'high-intent-funnel-and-temporary-cutoff-v108'
         }
       });
     }
