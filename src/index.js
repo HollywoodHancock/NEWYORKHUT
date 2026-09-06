@@ -1,6 +1,6 @@
-import site from './index-v106.js';
+import site from './index-v107.js';
 
-const DEPLOYMENT_MARKER = 'v106-production-redeploy-2026-09-06-r2';
+const DEPLOYMENT_MARKER = 'v107-expanded-intent-funnel-2026-09-06';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,11 +10,11 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v106',
+        version: 'v107',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v106.js',
-        feature: 'intent-specific-cross-domain-funnel-v106',
+        target: 'src/index-v107.js',
+        feature: 'expanded-intent-specific-funnel-v107',
         seo: {
           role: 'informational authority and education',
           transactionDomain: 'https://nyhut.com/ny-hut-permit',
@@ -24,24 +24,10 @@ export default {
           articleToHubTopicLinks: true,
           intentSpecificConversionHandoffs: true,
           intentSpecificCommercialDestinations: true,
+          closureCancellationSalesHandoffsSuppressed: true,
           directOrderDestination: true,
-          aboutRouteFixed: true,
-          legacyLeadsEndpointStatus: 410,
-          formDetailPagesNoindex: 11,
-          formsLibraryIndexable: true,
-          recordkeepingCanonical: '/learn/hut-recordkeeping-requirements',
-          recordkeepingRedirect: '/learn/hut-records-you-must-keep',
-          utmSource: 'newyorkhut.com',
-          utmMedium: 'referral',
-          utmCampaign: 'authority_site',
-          humanSiteMapNoindex: true,
           canonicalHostEnforced: true,
-          legacyFiveXxRoutesFixed: true,
-          addingVehicleDuplicateRedirected: true,
-          searchAndDownloadsNoindex: true,
-          universalNavigationNormalized: true,
-          primaryPermitGuideConsolidated: true,
-          supportingPagesLinkToPrimaryGuide: true
+          primaryPermitGuideConsolidated: true
         },
         sitemap: {
           route: '/sitemap.xml',
@@ -53,9 +39,9 @@ export default {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v106',
+          'x-newyorkhut-version': 'v107',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-feature': 'intent-specific-cross-domain-funnel-v106'
+          'x-newyorkhut-feature': 'expanded-intent-specific-funnel-v107'
         }
       });
     }
