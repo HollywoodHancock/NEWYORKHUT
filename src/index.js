@@ -1,6 +1,6 @@
-import site from './index-v111.js';
+import site from './index-v112.js';
 
-const DEPLOYMENT_MARKER = 'v111-phase1-topic-cluster-reinforcement-2026-09-07';
+const DEPLOYMENT_MARKER = 'v112-phase1-technical-seo-consistency-2026-09-07';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,11 +10,11 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v111',
+        version: 'v112',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v111.js',
-        feature: 'phase1-topic-cluster-reinforcement-v111',
+        target: 'src/index-v112.js',
+        feature: 'phase1-technical-seo-consistency-v112',
         seo: {
           role: 'informational authority and education',
           transactionDomain: 'https://nyhut.com/ny-hut-permit',
@@ -28,10 +28,16 @@ export default {
           tmt1CanonicalRoute: '/form-tmt-1-ny-hut/',
           tmt1LegacyRedirect: '/form-tmt-1 -> /form-tmt-1-ny-hut/',
           selfReferentialCanonicalsStrengthened: true,
+          openGraphCanonicalUrlsNormalized: true,
           organizationSchemaStrengthened: true,
+          websiteSchemaAdded: true,
+          breadcrumbSchemaAdded: true,
           complianceUniversityRelationshipDisclosed: true,
           educationCommercialSeparationDisclosed: true,
           contextualTopicClustersReinforced: true,
+          utilityNoindexGuardrails: true,
+          legacyTmt1InternalLinksNormalized: true,
+          oscarCopyTypoNormalized: true,
           closureCancellationSalesHandoffsSuppressed: true,
           canonicalHostEnforced: true
         },
@@ -44,9 +50,9 @@ export default {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v111',
+          'x-newyorkhut-version': 'v112',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-feature': 'phase1-topic-cluster-reinforcement-v111'
+          'x-newyorkhut-feature': 'phase1-technical-seo-consistency-v112'
         }
       });
     }
