@@ -1,6 +1,6 @@
-import site from './index-v112.js';
+import site from './index-v113.js';
 
-const DEPLOYMENT_MARKER = 'v112-phase1-technical-seo-consistency-2026-09-07';
+const DEPLOYMENT_MARKER = 'v113-phase1-sitemap-indexability-reconciliation-2026-09-07';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,11 +10,11 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v112',
+        version: 'v113',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v112.js',
-        feature: 'phase1-technical-seo-consistency-v112',
+        target: 'src/index-v113.js',
+        feature: 'phase1-sitemap-indexability-reconciliation-v113',
         seo: {
           role: 'informational authority and education',
           transactionDomain: 'https://nyhut.com/ny-hut-permit',
@@ -36,6 +36,10 @@ export default {
           educationCommercialSeparationDisclosed: true,
           contextualTopicClustersReinforced: true,
           utilityNoindexGuardrails: true,
+          sitemapRedirectsRemoved: true,
+          sitemapNoindexRoutesRemoved: true,
+          sitemapCanonicalHostNormalized: true,
+          sitemapTmt1Canonicalized: true,
           legacyTmt1InternalLinksNormalized: true,
           oscarCopyTypoNormalized: true,
           closureCancellationSalesHandoffsSuppressed: true,
@@ -43,16 +47,17 @@ export default {
         },
         sitemap: {
           route: '/sitemap.xml',
-          expectedUrlCount: 64,
-          contentType: 'application/xml; charset=UTF-8'
+          countHeader: 'x-sitemap-url-count',
+          contentType: 'application/xml; charset=UTF-8',
+          dynamicallyReconciled: true
         }
       }, null, 2), {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v112',
+          'x-newyorkhut-version': 'v113',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-feature': 'phase1-technical-seo-consistency-v112'
+          'x-newyorkhut-feature': 'phase1-sitemap-indexability-reconciliation-v113'
         }
       });
     }
