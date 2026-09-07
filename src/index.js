@@ -1,6 +1,6 @@
-import site from './index-v108.js';
+import site from './index-v109.js';
 
-const DEPLOYMENT_MARKER = 'v108-high-intent-funnel-and-temporary-cutoff-2026-09-06';
+const DEPLOYMENT_MARKER = 'v109-phase1-cannibalization-route-normalization-2026-09-07';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,39 +10,37 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v108',
+        version: 'v109',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v108.js',
-        feature: 'high-intent-funnel-and-temporary-cutoff-v108',
+        target: 'src/index-v109.js',
+        feature: 'phase1-cannibalization-and-route-normalization-v109',
         seo: {
           role: 'informational authority and education',
           transactionDomain: 'https://nyhut.com/ny-hut-permit',
           referralTracking: true,
-          authorityClusterLinks: true,
-          hubToArticleCrawlPaths: true,
-          articleToHubTopicLinks: true,
           intentSpecificConversionHandoffs: true,
-          intentSpecificCommercialDestinations: true,
-          closureCancellationSalesHandoffsSuppressed: true,
           temporaryPermitCutoffEastern: '13:30',
           temporaryPermitSameDayGuaranteed: false,
-          canonicalHostEnforced: true,
-          primaryPermitGuideConsolidated: true
+          primaryPermitGuide: '/new-york-hut-guide',
+          supportingIntentMetadataDifferentiated: true,
+          tmt1CanonicalRoute: '/form-tmt-1-ny-hut/',
+          tmt1LegacyRedirect: '/form-tmt-1 -> /form-tmt-1-ny-hut/',
+          closureCancellationSalesHandoffsSuppressed: true,
+          canonicalHostEnforced: true
         },
         sitemap: {
           route: '/sitemap.xml',
-          urlCount: 64,
-          contentType: 'application/xml; charset=UTF-8',
-          xRobotsTagRemoved: true
+          expectedUrlCount: 64,
+          contentType: 'application/xml; charset=UTF-8'
         }
       }, null, 2), {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v108',
+          'x-newyorkhut-version': 'v109',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-feature': 'high-intent-funnel-and-temporary-cutoff-v108'
+          'x-newyorkhut-feature': 'phase1-cannibalization-and-route-normalization-v109'
         }
       });
     }
