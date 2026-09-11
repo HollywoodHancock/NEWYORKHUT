@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 
 const base = process.env.SITE_URL || 'https://newyorkhut.com';
-const routes = ['/', '/learn', '/tools', '/services', '/new-york-hut-guide', '/terms', '/privacy-policy'];
+const routes = ['/', '/learn', '/tools', '/services', '/new-york-hut-guide', '/form-tmt-1-ny-hut', '/terms', '/privacy-policy'];
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const entry = fs.readFileSync('src/index.js', 'utf8');
 const targetMatch = entry.match(/import\s+site\s+from\s+['"]\.\/(index-v(\d+)\.js)['"]/);

@@ -12,13 +12,14 @@ for (const file of ['wrangler.json', 'wrangler.jsonc']) {
 }
 
 const entry = fs.readFileSync('src/index.js', 'utf8');
-if (!/import\s+site\s+from\s+['"]\.\/index-v105\.js['"]/.test(entry)) {
-  fail('src/index.js must point to the v114 production implementation');
+if (!/import\s+site\s+from\s+['"]\.\/index-v115\.js['"]/.test(entry)) {
+  fail('src/index.js must point to the v115 production implementation');
 }
 
 const navigation = fs.readFileSync('src/index-v104.js', 'utf8');
 const topicConsolidation = fs.readFileSync('src/index-v105.js', 'utf8');
 const visibilityRecovery = fs.readFileSync('src/index-v114.js', 'utf8');
+const tmtRecovery = fs.readFileSync('src/index-v115.js', 'utf8');
 for (const required of [
   'id="nyh-global-header"',
   'aria-label="Primary navigation"',
@@ -40,6 +41,16 @@ for (const required of [
   'cleanLayeredMarkup'
 ]) {
   if (!visibilityRecovery.includes(required)) fail(`src/index-v114.js is missing visibility recovery safeguard: ${required}`);
+}
+
+for (const required of [
+  'tmt1-indexability-recovery-v115',
+  "const CANONICAL_PATH = '/form-tmt-1-ny-hut'",
+  'Form TMT-1: New York HUT Application Guide',
+  'x-newyorkhut-version',
+  'utm_content=form-tmt-1-ny-hut-intent-handoff'
+]) {
+  if (!tmtRecovery.includes(required)) fail(`src/index-v115.js is missing TMT-1 recovery safeguard: ${required}`);
 }
 
 for (const required of [
