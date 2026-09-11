@@ -27,7 +27,7 @@ function tmtPage() {
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://newyorkhut.com/"},{"@type":"ListItem","position":2,"name":"Registration Guide","item":"https://newyorkhut.com/ny-hut-registration-guide"},{"@type":"ListItem","position":3,"name":"Form TMT-1","item":"https://newyorkhut.com/form-tmt-1-ny-hut"}]}</script>
 </head>
 <body>
-  <header class="top"><div class="wrap"><a href="/">NewYorkHUT.com</a> · Compliance University™ knowledge center</div></header>
+  <header class="top"><div class="wrap"><nav aria-label="Primary navigation"><a href="/">NewYorkHUT.com</a> · <a href="/new-york-hut-guide">HUT Guide</a> · <a href="/learn">Learning Center</a></nav><div>Compliance University™ knowledge center</div></div></header>
   <main class="wrap">
     <section class="hero"><div class="eyebrow">New York HUT registration</div><h1>Form TMT-1: New York HUT Certificate and Decal Application</h1><p class="lead">Form TMT-1 is used in the New York Highway Use Tax registration process. This guide explains the information carriers should prepare before requesting HUT credentials.</p></section>
     <section class="card"><h2>Information commonly needed</h2><ul><li>Legal business name, contact details, and taxpayer identification information.</li><li>USDOT and operating-authority information, when applicable.</li><li>Vehicle identification number, plate details, unit number, fuel type, axles, and weight information.</li><li>Ownership or lease information for each vehicle being registered.</li></ul></section>
