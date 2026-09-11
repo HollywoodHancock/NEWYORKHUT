@@ -1,0 +1,49 @@
+name: Search Integrity Guard
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+
+  live-sitemap:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Wait for the v115 production deployment
+        if: github.event_name == 'push'
+        run: |
+          for attempt in $(seq 1 60); do
+            marker=$(curl -fsS https://newyorkhut.com/__deploy_probe || true)
+            if echo "$marker" | grep -q 'v115-tmt1-indexability-recovery-2026-09-10'; then exit 0; fi
+            sleep 10
+          done
+          echo 'v115 deployment marker did not appear within 10 minutes' >&2
+          exit 1
+      - run: npm run audit:live

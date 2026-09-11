@@ -1,6 +1,6 @@
-import site from './index-v114.js';
+import site from './index-v115.js';
 
-const DEPLOYMENT_MARKER = 'v114-search-visibility-recovery-2026-09-10';
+const DEPLOYMENT_MARKER = 'v115-tmt1-indexability-recovery-2026-09-10';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,11 +10,11 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v114',
+        version: 'v115',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v114.js',
-        feature: 'search-visibility-recovery-v114',
+        target: 'src/index-v115.js',
+        feature: 'tmt1-indexability-recovery-v115',
         seo: {
           role: 'informational authority and education',
           transactionDomain: 'https://nyhut.com/ny-hut-permit',
@@ -45,7 +45,8 @@ export default {
           closureCancellationSalesHandoffsSuppressed: true,
           canonicalHostEnforced: true,
           layeredMarkupConsolidated: true,
-          provenLegacyPagesPreserved: true
+          provenLegacyPagesPreserved: true,
+          tmt1CanonicalReturns200: true
         },
         sitemap: {
           route: '/sitemap.xml',
@@ -57,9 +58,9 @@ export default {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v114',
+          'x-newyorkhut-version': 'v115',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-feature': 'search-visibility-recovery-v114'
+          'x-newyorkhut-feature': 'tmt1-indexability-recovery-v115'
         }
       });
     }

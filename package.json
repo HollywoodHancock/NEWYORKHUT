@@ -7,7 +7,8 @@
     "check": "wrangler deploy --config wrangler.jsonc --dry-run",
     "build": "wrangler deploy --config wrangler.jsonc --dry-run",
     "deploy": "wrangler deploy --config wrangler.jsonc",
-    "dev": "wrangler dev --config wrangler.jsonc"
+    "dev": "wrangler dev --config wrangler.jsonc",
+    "audit:live": "node scripts/audit-live-sitemap.mjs"
   },
   "devDependencies": {
     "esbuild": "^0.25.0",
