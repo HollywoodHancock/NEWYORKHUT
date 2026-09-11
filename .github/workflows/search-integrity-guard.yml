@@ -34,12 +34,12 @@ jobs:
         with:
           node-version: 22
       - run: npm install
-      - name: Wait for the v115 production deployment
+      - name: Wait for the current v115 production deployment
         if: github.event_name == 'push'
         run: |
           for attempt in $(seq 1 60); do
             marker=$(curl -fsS https://newyorkhut.com/__deploy_probe || true)
-            if echo "$marker" | grep -q 'v115-tmt1-indexability-recovery-2026-09-10'; then exit 0; fi
+            if echo "$marker" | grep -q 'v115-high-intent-handoffs-2026-09-10-r3'; then exit 0; fi
             sleep 10
           done
           echo 'v115 deployment marker did not appear within 10 minutes' >&2
