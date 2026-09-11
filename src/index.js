@@ -1,6 +1,6 @@
 import site from './index-v115.js';
 
-const DEPLOYMENT_MARKER = 'v115-tmt1-indexability-recovery-2026-09-10';
+const DEPLOYMENT_MARKER = 'v115-high-intent-handoffs-2026-09-10-r3';
 
 export default {
   async fetch(request, env, ctx) {
@@ -14,7 +14,7 @@ export default {
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
         target: 'src/index-v115.js',
-        feature: 'tmt1-indexability-recovery-v115',
+        feature: 'high-intent-handoffs-v115-r3',
         seo: {
           role: 'informational authority and education',
           transactionDomain: 'https://nyhut.com/ny-hut-permit',
@@ -46,7 +46,9 @@ export default {
           canonicalHostEnforced: true,
           layeredMarkupConsolidated: true,
           provenLegacyPagesPreserved: true,
-          tmt1CanonicalReturns200: true
+          tmt1CanonicalReturns200: true,
+          commercialUtilityLinksPreserved: true,
+          highIntentHandoffsMapped: true
         },
         sitemap: {
           route: '/sitemap.xml',
@@ -60,7 +62,7 @@ export default {
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
           'x-newyorkhut-version': 'v115',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-feature': 'tmt1-indexability-recovery-v115'
+          'x-newyorkhut-feature': 'high-intent-handoffs-v115-r3'
         }
       });
     }

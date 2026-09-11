@@ -10,7 +10,7 @@
     "run_worker_first": true
   },
   "vars": {
-    "DEPLOY_RELEASE": "v115-tmt1-indexability-recovery-2026-09-10"
+    "DEPLOY_RELEASE": "v115-high-intent-handoffs-2026-09-10-r3"
   },
   "observability": {
     "enabled": true

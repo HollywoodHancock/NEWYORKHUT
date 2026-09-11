@@ -3,9 +3,60 @@ import site from './index-v114.js';
 const VERSION = 'v115';
 const FEATURE = 'tmt1-indexability-recovery-v115';
 const CANONICAL_PATH = '/form-tmt-1-ny-hut';
+const NYHUT_ORIGIN = 'https://nyhut.com';
+
+const PAGE_HANDOFFS = new Map([
+  ['/services/add-a-vehicle', '/order?product=nyhut-new'],
+  ['/new-york-hut/how-do-i-add-a-vehicle-to-my-hut-account', '/order?product=nyhut-new'],
+  ['/new-york-hut/how-do-i-change-a-license-plate-on-a-hut-credential', '/order?product=nyhut-revision'],
+  ['/new-york-hut/what-are-25th-series-hut-credentials', '/ny-hut-renewal'],
+  ['/guides/get-trip-certificate', '/order?product=nyhut-temporary'],
+  ['/cost', '/ny-hut-cost'],
+  ['/cost/late-filing', '/ny-hut-quarterly-filing-basics'],
+  ['/filing/quarterly-due-dates', '/ny-hut-quarterly-filing-basics'],
+  ['/vehicles/box-trucks', '/who-needs-a-ny-hut-permit']
+]);
+
+const NO_SALES_HANDOFF = new Set([
+  '/new-york-hut/how-do-i-remove-or-cancel-a-hut-vehicle',
+  '/ny-hut-account-closure',
+  '/ny-hut-certificate-cancellation'
+]);
+
+const LABEL_DESTINATIONS = new Map([
+  ['my nyhut', '/my-nyhut'],
+  ['customer dashboard', '/my-nyhut'],
+  ['order status', '/lookup'],
+  ['trip certificate', '/order?product=nyhut-temporary'],
+  ['add a vehicle', '/order?product=nyhut-new'],
+  ['new hut permit', '/order?product=nyhut-new'],
+  ['replacement permit', '/order?product=nyhut-replacement'],
+  ['credential revision', '/order?product=nyhut-revision']
+]);
 
 function normalizePath(url) {
   return url.pathname.replace(/\/+$/, '') || '/';
+}
+
+function trackedDestination(destination, sourcePath, label) {
+  const url = new URL(destination, NYHUT_ORIGIN);
+  url.searchParams.set('utm_source', 'newyorkhut.com');
+  url.searchParams.set('utm_medium', 'referral');
+  url.searchParams.set('utm_campaign', 'authority_site');
+  url.searchParams.set('utm_content', `${sourcePath.replace(/^\//, '').replace(/\//g, '-') || 'homepage'}-${label.replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`);
+  return url.toString().replace(/&/g, '&amp;');
+}
+
+function repairCommercialDestinations(html, sourcePath) {
+  return html.replace(/<a\b([^>]*?)href=(["'])https:\/\/(?:www\.)?nyhut\.com[^"']*\2([^>]*)>([\s\S]*?)<\/a>/gi, (anchor, before, quote, after, body) => {
+    const label = body.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
+    const fixedDestination = LABEL_DESTINATIONS.get(label);
+    const isPrimaryOrderLink = /nyh-order-link/i.test(`${before} ${after}`) || ['order permit', 'start a hut permit', 'start your permit', 'continue to nyhut.com', 'visit nyhut.com'].includes(label);
+    const destination = fixedDestination ?? (isPrimaryOrderLink ? PAGE_HANDOFFS.get(sourcePath) ?? '/ny-hut-permit' : null);
+    if (!destination) return anchor;
+    if (NO_SALES_HANDOFF.has(sourcePath) && !['/my-nyhut', '/lookup'].includes(destination)) return '';
+    return `<a${before}href=${quote}${trackedDestination(destination, sourcePath, label)}${quote}${after}>${body}</a>`;
+  });
 }
 
 function tmtPage() {
@@ -65,6 +116,11 @@ export default {
     const headers = new Headers(response.headers);
     headers.set('x-newyorkhut-version', VERSION);
     headers.set('x-newyorkhut-feature', FEATURE);
+    const type = headers.get('content-type') || '';
+    if (response.status === 200 && type.includes('text/html')) {
+      const html = repairCommercialDestinations(await response.text(), path);
+      return new Response(html, { status: response.status, statusText: response.statusText, headers });
+    }
     return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
   }
 };
