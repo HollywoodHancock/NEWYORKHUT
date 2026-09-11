@@ -61,6 +61,10 @@ export default {
       });
     }
 
-    return site.fetch(request, env, ctx);
+    const response = await site.fetch(request, env, ctx);
+    const headers = new Headers(response.headers);
+    headers.set('x-newyorkhut-version', VERSION);
+    headers.set('x-newyorkhut-feature', FEATURE);
+    return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
   }
 };
