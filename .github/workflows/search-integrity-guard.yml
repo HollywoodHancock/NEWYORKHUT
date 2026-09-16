@@ -25,7 +25,13 @@ jobs:
       - run: npm run build
 
   live-sitemap:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    if: |
+      always() &&
+      (
+        github.event_name == 'schedule' ||
+        github.event_name == 'workflow_dispatch' ||
+        (github.event_name == 'push' && needs.build.result == 'success')
+      )
     needs: build
     runs-on: ubuntu-latest
     steps:
