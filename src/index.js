@@ -1,6 +1,6 @@
-import site from './index-v115.js';
+import site from './index-v116.js';
 
-const DEPLOYMENT_MARKER = 'v115-high-intent-handoffs-2026-09-10-r3';
+const DEPLOYMENT_MARKER = 'v116-ny-hut-axle-count-guidance-2026-09-24';
 
 export default {
   async fetch(request, env, ctx) {
@@ -10,59 +10,45 @@ export default {
     if (path === '/__deploy_probe') {
       return new Response(JSON.stringify({
         application: 'NewYorkHUT.com',
-        version: 'v115',
+        version: 'v116',
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
-        target: 'src/index-v115.js',
-        feature: 'high-intent-handoffs-v115-r3',
+        target: 'src/index-v116.js',
+        feature: 'ny-hut-axle-count-guidance-v116',
         seo: {
           role: 'informational authority and education',
           transactionDomain: 'https://nyhut.com/ny-hut-permit',
           parentEducationalFramework: 'Compliance University',
           referralTracking: true,
           intentSpecificConversionHandoffs: true,
+          axleCountGuide: '/ny-hut-axle-count',
+          axleGuidance: 'Axles = power unit only; Combined Axles = power unit plus trailer',
+          hutEligibilityDistinguishedFromIftaAxleRules: true,
+          contextualAxleLinksAdded: true,
           temporaryPermitCutoffEastern: '13:30',
           temporaryPermitSameDayGuaranteed: false,
           primaryPermitGuide: '/new-york-hut-guide',
           supportingIntentMetadataDifferentiated: true,
-          tmt1CanonicalRoute: '/form-tmt-1-ny-hut/',
-          tmt1LegacyRedirect: '/form-tmt-1 -> /form-tmt-1-ny-hut/',
           selfReferentialCanonicalsStrengthened: true,
-          openGraphCanonicalUrlsNormalized: true,
-          organizationSchemaStrengthened: true,
-          websiteSchemaAdded: true,
-          breadcrumbSchemaAdded: true,
           complianceUniversityRelationshipDisclosed: true,
           educationCommercialSeparationDisclosed: true,
           contextualTopicClustersReinforced: true,
-          utilityNoindexGuardrails: true,
-          sitemapRedirectsRemoved: true,
-          sitemapNoindexRoutesRemoved: true,
-          sitemapCanonicalHostNormalized: true,
-          sitemapTmt1Canonicalized: true,
-          legacyTmt1InternalLinksNormalized: true,
-          oscarCopyTypoNormalized: true,
-          closureCancellationSalesHandoffsSuppressed: true,
-          canonicalHostEnforced: true,
-          layeredMarkupConsolidated: true,
-          provenLegacyPagesPreserved: true,
-          tmt1CanonicalReturns200: true,
-          commercialUtilityLinksPreserved: true,
-          highIntentHandoffsMapped: true
+          canonicalHostEnforced: true
         },
         sitemap: {
           route: '/sitemap.xml',
           countHeader: 'x-sitemap-url-count',
           contentType: 'application/xml; charset=UTF-8',
-          dynamicallyReconciled: true
+          dynamicallyReconciled: true,
+          axleGuideIncluded: true
         }
       }, null, 2), {
         headers: {
           'content-type': 'application/json; charset=utf-8',
           'cache-control': 'no-store, no-cache, must-revalidate, max-age=0',
-          'x-newyorkhut-version': 'v115',
+          'x-newyorkhut-version': 'v116',
           'x-newyorkhut-deployment-marker': DEPLOYMENT_MARKER,
-          'x-newyorkhut-feature': 'high-intent-handoffs-v115-r3'
+          'x-newyorkhut-feature': 'ny-hut-axle-count-guidance-v116'
         }
       });
     }
