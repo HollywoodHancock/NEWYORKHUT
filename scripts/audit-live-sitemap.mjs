@@ -29,9 +29,16 @@ async function worker() {
       const description = html.match(/<meta\s+[^>]*name=["']description["'][^>]*content=["']([^"']+)["'][^>]*>/i)?.[1]
         ?? html.match(/<meta\s+[^>]*content=["']([^"']+)["'][^>]*name=["']description["'][^>]*>/i)?.[1];
       const h1Count = (html.match(/<h1\b/gi) || []).length;
+      const titleCount = (html.match(/<title\b/gi) || []).length;
+      const canonicalCount = (html.match(/<link\b[^>]*\brel=["']canonical["']/gi) || []).length;
+      const footerCount = (html.match(/<footer\b/gi) || []).length;
       const canonical = html.match(/<link\s+[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)["'][^>]*>/i)?.[1]
         ?? html.match(/<link\s+[^>]*href=["']([^"']+)["'][^>]*rel=["']canonical["'][^>]*>/i)?.[1];
       if (canonical !== url) failures.push(`${url}: canonical is ${canonical ?? 'missing'}`);
+      if (canonicalCount !== 1) failures.push(`${url}: expected one canonical tag, found ${canonicalCount}`);
+      if (titleCount !== 1) failures.push(`${url}: expected one title tag, found ${titleCount}`);
+      if (footerCount !== 1) failures.push(`${url}: expected one footer, found ${footerCount}`);
+      if (/\bnoindex\b/i.test(response.headers.get('x-robots-tag') ?? '')) failures.push(`${url}: X-Robots-Tag is noindex`);
       if (/<meta\s+[^>]*name=["']robots["'][^>]*content=["'][^"']*noindex/i.test(html)) failures.push(`${url}: page is noindex`);
       if (!title) failures.push(`${url}: title is missing`);
       else titles.set(title.toLowerCase(), [...(titles.get(title.toLowerCase()) ?? []), url]);

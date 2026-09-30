@@ -55,6 +55,15 @@ for (const route of routes) {
   if (response.headers.get('x-newyorkhut-version') !== expectedVersion) throw new Error(`${route} is not served by ${expectedVersion}`);
   if (!/<footer\b/i.test(body)) throw new Error(`${route} is missing a footer`);
   if ((body.match(/<footer\b/gi) || []).length !== 1) throw new Error(`${route} has duplicate footers`);
+  for (const [label, pattern] of [
+    ['title', /<title\b/gi],
+    ['canonical', /<link\b[^>]*\brel=["']canonical["']/gi],
+    ['H1', /<h1\b/gi]
+  ]) {
+    const count = (body.match(pattern) || []).length;
+    if (count !== 1) throw new Error(`${route} expected one ${label}, found ${count}`);
+  }
+  if (/\bnoindex\b/i.test(response.headers.get('x-robots-tag') ?? '')) throw new Error(`${route} has a noindex response header`);
   console.log(`PASS ${route}`);
 }
 
