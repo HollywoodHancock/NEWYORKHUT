@@ -53,6 +53,8 @@ for (const route of routes) {
     throw new Error(`${route} still contains the unmodified legacy header-hiding rule`);
   }
   if (response.headers.get('x-newyorkhut-version') !== expectedVersion) throw new Error(`${route} is not served by ${expectedVersion}`);
+  if (!/<footer\b/i.test(body)) throw new Error(`${route} is missing a footer`);
+  if ((body.match(/<footer\b/gi) || []).length !== 1) throw new Error(`${route} has duplicate footers`);
   console.log(`PASS ${route}`);
 }
 

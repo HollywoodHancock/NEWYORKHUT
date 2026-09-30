@@ -12,14 +12,18 @@ for (const file of ['wrangler.json', 'wrangler.jsonc']) {
 }
 
 const entry = fs.readFileSync('src/index.js', 'utf8');
-if (!/import\s+site\s+from\s+['"]\.\/index-v115\.js['"]/.test(entry)) {
-  fail('src/index.js must point to the v115 production implementation');
+if (!/import\s+site\s+from\s+['"]\.\/index-v118\.js['"]/.test(entry)) {
+  fail('src/index.js must point to the v118 production implementation');
 }
 
 const navigation = fs.readFileSync('src/index-v104.js', 'utf8');
 const topicConsolidation = fs.readFileSync('src/index-v105.js', 'utf8');
 const visibilityRecovery = fs.readFileSync('src/index-v114.js', 'utf8');
 const tmtRecovery = fs.readFileSync('src/index-v115.js', 'utf8');
+const footerRecovery = fs.readFileSync('src/index-v118.js', 'utf8');
+for (const required of ['restoreMissingFooter', 'id="nyh47-footer"', '/new-york-hut-guide', '/tools', '/official-resources']) {
+  if (!footerRecovery.includes(required)) fail(`src/index-v118.js is missing footer safeguard: ${required}`);
+}
 for (const required of [
   'id="nyh-global-header"',
   'aria-label="Primary navigation"',

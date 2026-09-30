@@ -25,6 +25,8 @@ jobs:
           node-version: 22
       - name: Verify canonical runtime and navigation safeguards
         run: node scripts/verify-production-contract.mjs
+      - name: Test footer and canonical redirects
+        run: node --test scripts/test-footer-and-canonicals.mjs
 
   live-production:
     name: Verify live NewYorkHUT.com
