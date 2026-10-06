@@ -1,0 +1,31 @@
+// Broken legacy URLs mapped to existing educational pages.
+export const LEGACY_ROUTE_REDIRECTS = new Map([
+  [
+    "/ny-hut-registration-guide",
+    "/learn/how-to-register-for-new-york-hut"
+  ],
+  [
+    "/ny-hut-certificate-and-decal",
+    "/learn/new-york-hut-certificate-of-registration"
+  ],
+  [
+    "/temporary-ny-hut-permit",
+    "/guides/get-trip-certificate"
+  ],
+  [
+    "/ny-hut-trip-certificate-limits",
+    "/guides/get-trip-certificate"
+  ],
+  [
+    "/ny-hut-out-of-state-carriers",
+    "/guides/out-of-state-carriers"
+  ],
+  [
+    "/ny-hut-weight-requirements",
+    "/learn/how-gvw-affects-your-hut-tax"
+  ],
+  [
+    "/ny-hut-faq",
+    "/new-york-hut"
+  ]
+]);

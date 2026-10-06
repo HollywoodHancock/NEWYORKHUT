@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import {LEGACY_ROUTE_REDIRECTS} from '../src/legacy-route-redirects.js';
 
 const base = process.env.SITE_URL || 'https://newyorkhut.com';
 const routes = ['/', '/learn', '/tools', '/services', '/new-york-hut-guide', '/form-tmt-1-ny-hut', '/terms', '/privacy-policy'];
@@ -7,6 +8,7 @@ const entry = fs.readFileSync('src/index.js', 'utf8');
 const targetMatch = entry.match(/import\s+site\s+from\s+['"]\.\/(index-v(\d+)\.js)['"]/);
 if (!targetMatch) throw new Error('Unable to determine active production target from src/index.js');
 const expectedTarget = `src/${targetMatch[1]}`;
+const expectedMarker = entry.match(/const DEPLOYMENT_MARKER = ['"]([^'"]+)/)?.[1];
 const expectedVersion = `v${targetMatch[2]}`;
 
 async function get(path) {
@@ -31,7 +33,7 @@ async function getExpectedProbe() {
     try {
       const probe = await get('/__deploy_probe');
       const data = JSON.parse(probe.body);
-      if (data.version === expectedVersion && data.target === expectedTarget) return {probe, data};
+      if (data.version === expectedVersion && data.target === expectedTarget && data.deploymentMarker === expectedMarker) return {probe, data};
       lastError = new Error(`Deployment is ${data.version}/${data.target}; waiting for ${expectedVersion}/${expectedTarget}`);
     } catch (error) {
       lastError = error;
@@ -42,7 +44,7 @@ async function getExpectedProbe() {
 }
 
 const {probe, data} = await getExpectedProbe();
-for (const [key, expected] of Object.entries({application: 'NewYorkHUT.com', version: expectedVersion, entrypoint: 'src/index.js', target: expectedTarget})) {
+for (const [key, expected] of Object.entries({application: 'NewYorkHUT.com', version: expectedVersion, entrypoint: 'src/index.js', target: expectedTarget, deploymentMarker: expectedMarker})) {
   if (data[key] !== expected) throw new Error(`Probe ${key} expected ${expected}, received ${data[key]}`);
 }
 
@@ -68,6 +70,7 @@ for (const route of routes) {
 }
 
 for (const [source, target] of [
+  ...LEGACY_ROUTE_REDIRECTS,
   ['/what-is-hut', '/new-york-hut-guide'],
   ['/new-york-hut-weight-threshold', '/learn/how-gvw-affects-your-hut-tax'],
   ['/learn/adding-a-vehicle-to-your-new-york-hut-account', '/learn/adding-a-vehicle-to-new-york-hut']
@@ -77,5 +80,9 @@ for (const [source, target] of [
   if (new URL(response.headers.get('location')).pathname !== target) throw new Error(`${source} has unexpected redirect target`);
   console.log(`PASS ${source} → ${target}`);
 }
+
+const missing = await fetch(`${base}/__missing_route_regression_20261006`, {redirect: 'manual'});
+if (missing.status !== 404) throw new Error(`Unknown route expected 404, received ${missing.status}`);
+console.log('PASS unknown route → 404');
 
 console.log('Live production functional check passed for deployment probe and all critical routes.');

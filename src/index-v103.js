@@ -1,10 +1,12 @@
 import site from './index-v102.js';
+import {LEGACY_ROUTE_REDIRECTS} from './legacy-route-redirects.js';
 
 const VERSION = 'v103';
 const FEATURE = 'canonical-host-and-indexing-repair-v103';
 const CANONICAL_ORIGIN = 'https://newyorkhut.com';
 
 const PERMANENT_REDIRECTS = new Map([
+  ...LEGACY_ROUTE_REDIRECTS,
   ['/what-is-hut', '/new-york-hut-guide'],
   ['/new-york-hut-weight-threshold', '/learn/how-gvw-affects-your-hut-tax'],
   ['/learn/adding-a-vehicle-to-your-new-york-hut-account', '/learn/adding-a-vehicle-to-new-york-hut']

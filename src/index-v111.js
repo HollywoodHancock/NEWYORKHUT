@@ -1,4 +1,5 @@
 import site from './index-v110.js';
+import {LEGACY_ROUTE_REDIRECTS} from './legacy-route-redirects.js';
 
 const VERSION = 'v111';
 const FEATURE = 'phase1-topic-cluster-reinforcement-v111';
@@ -130,7 +131,9 @@ export default {
     }
 
     const path = pathOf(request);
-    const links = CLUSTERS.get(path);
+    const seen = new Set([path]);
+    const links = CLUSTERS.get(path)?.map(([href, label]) => [LEGACY_ROUTE_REDIRECTS.get(href) ?? href, label])
+      .filter(([href]) => { if (seen.has(href)) return false; seen.add(href); return true; });
     if (!links) return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
 
     const html = addRelated(await response.text(), links);

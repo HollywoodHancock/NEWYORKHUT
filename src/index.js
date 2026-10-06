@@ -1,6 +1,6 @@
 import site from './index-v118.js';
 
-const DEPLOYMENT_MARKER = 'v118-restore-missing-footer-2026-09-29';
+const DEPLOYMENT_MARKER = 'v118-legacy-route-repair-2026-10-06';
 
 export default {
   async fetch(request, env, ctx) {

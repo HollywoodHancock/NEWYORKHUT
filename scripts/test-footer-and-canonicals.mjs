@@ -1,6 +1,31 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import {LEGACY_ROUTE_REDIRECTS} from '../src/legacy-route-redirects.js';
 import {restoreMissingFooter} from '../src/index-v118.js';
+
+test('seven broken legacy routes redirect in one hop to working canonical pages', async () => {
+  const {default: worker} = await import('../src/index.js');
+  for (const [source, target] of LEGACY_ROUTE_REDIRECTS) {
+    for (const origin of ['https://newyorkhut.com', 'http://www.newyorkhut.com']) {
+      const response = await worker.fetch(new Request(`${origin}${source}/?source=test`), {}, {});
+      assert.equal(response.status, 301, source);
+      assert.equal(response.headers.get('location'), `https://newyorkhut.com${target}?source=test`);
+    }
+    const final = await worker.fetch(new Request(`https://newyorkhut.com${target}`), {}, {});
+    assert.equal(final.status, 200, target);
+    const html = await final.text();
+    assert.ok(html.includes(`rel="canonical" href="https://newyorkhut.com${target}"`), target);
+  }
+});
+
+test('unknown routes terminate with 404 rather than recursing into the active Worker', async () => {
+  const {default: worker} = await import('../src/index.js');
+  for (const path of ['/missing-route-regression', '/learning-center/missing-article']) {
+    const response = await worker.fetch(new Request(`https://newyorkhut.com${path}`), {}, {});
+    assert.equal(response.status, 404, path);
+    assert.match(response.headers.get('x-robots-tag'), /noindex/);
+  }
+});
 
 test('restores one visible footer without changing page metadata or main content', () => {
   const original = '<!doctype html><html><head><title>Guide</title><link rel="canonical" href="https://newyorkhut.com/new-york-hut-guide"></head><body><main><h1>Guide</h1></main></body></html>';
