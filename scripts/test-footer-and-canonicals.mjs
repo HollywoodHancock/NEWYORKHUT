@@ -50,3 +50,22 @@ test('active Worker restores footer on affected routes without duplicating homep
     assert.equal(html.includes('nyh118-footer'), path !== '/', path);
   }
 });
+
+test('active Worker redirects old host and TMT-1 aliases directly to the final canonical URL', async () => {
+  const {default: worker} = await import('../src/index.js');
+  const env = {ASSETS: {fetch: async () => new Response('not found', {status: 404})}};
+  for (const [source, target] of [
+    ['http://www.newyorkhut.com/what-is-hut', 'https://newyorkhut.com/new-york-hut-guide'],
+    ['http://www.newyorkhut.com/form-tmt-1?source=test', 'https://newyorkhut.com/form-tmt-1-ny-hut?source=test'],
+    ['http://www.newyorkhut.com/form-tmt-1-ny-hut/', 'https://newyorkhut.com/form-tmt-1-ny-hut'],
+    ['https://www.newyorkhut.com/form-tmt-1-ny-hut', 'https://newyorkhut.com/form-tmt-1-ny-hut'],
+    ['https://newyorkhut.com/form-tmt-1-ny-hut/', 'https://newyorkhut.com/form-tmt-1-ny-hut']
+  ]) {
+    const response = await worker.fetch(new Request(source), env, {});
+    assert.equal(response.status, 301, source);
+    assert.equal(response.headers.get('location'), target, source);
+    const final = await worker.fetch(new Request(target), env, {});
+    assert.equal(final.status, 200, target);
+    assert.match(await final.text(), /rel="canonical" href="https:\/\/newyorkhut\.com\/(?:new-york-hut-guide|form-tmt-1-ny-hut)"/);
+  }
+});

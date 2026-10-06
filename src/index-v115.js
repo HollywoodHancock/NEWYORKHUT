@@ -97,11 +97,17 @@ export default {
     const path = normalizePath(url);
 
     if (path === '/form-tmt-1') {
-      url.pathname = `${CANONICAL_PATH}/`;
-      return Response.redirect(url.toString(), 301);
+      const destination = new URL(CANONICAL_PATH, 'https://newyorkhut.com');
+      destination.search = url.search;
+      return Response.redirect(destination.toString(), 301);
     }
 
     if (path === CANONICAL_PATH) {
+      if (url.protocol !== 'https:' || url.hostname !== 'newyorkhut.com' || url.pathname !== CANONICAL_PATH) {
+        const destination = new URL(CANONICAL_PATH, 'https://newyorkhut.com');
+        destination.search = url.search;
+        return Response.redirect(destination.toString(), 301);
+      }
       return new Response(tmtPage(), {
         headers: {
           'content-type': 'text/html; charset=UTF-8',

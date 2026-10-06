@@ -70,7 +70,7 @@ export default {
 
     // Enforce one protocol and hostname before any legacy route handler runs.
     if (url.protocol !== 'https:' || url.hostname !== 'newyorkhut.com') {
-      return permanentRedirect(url);
+      return permanentRedirect(url, PERMANENT_REDIRECTS.get(normalizedPath(url)) ?? url.pathname);
     }
 
     const path = normalizedPath(url);
