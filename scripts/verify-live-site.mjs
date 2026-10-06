@@ -1,8 +1,10 @@
 import fs from 'node:fs';
 import {LEGACY_ROUTE_REDIRECTS} from '../src/legacy-route-redirects.js';
+import {CORE_GUIDES} from '../src/content/core-guides.js';
+import {CONSOLIDATION_REDIRECTS} from '../src/seo-consolidation.js';
 
 const base = process.env.SITE_URL || 'https://newyorkhut.com';
-const routes = ['/', '/learn', '/tools', '/services', '/new-york-hut-guide', '/form-tmt-1-ny-hut', '/terms', '/privacy-policy'];
+const routes = [...new Set(['/', '/learn', '/tools', '/services', '/new-york-hut-guide', '/form-tmt-1-ny-hut', '/terms', '/privacy-policy', ...CORE_GUIDES.keys()])];
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const entry = fs.readFileSync('src/index.js', 'utf8');
 const targetMatch = entry.match(/import\s+site\s+from\s+['"]\.\/(index-v(\d+)\.js)['"]/);
@@ -71,11 +73,18 @@ for (const route of routes) {
 
 for (const [source, target] of [
   ...LEGACY_ROUTE_REDIRECTS,
+  ...CONSOLIDATION_REDIRECTS,
   ['/what-is-hut', '/new-york-hut-guide'],
   ['/new-york-hut-weight-threshold', '/learn/how-gvw-affects-your-hut-tax'],
   ['/learn/adding-a-vehicle-to-your-new-york-hut-account', '/learn/adding-a-vehicle-to-new-york-hut']
 ]) {
-  const response = await fetch(`${base}${source}`, {redirect: 'manual'});
+  let response;
+  for (let attempt = 0; attempt < 6; attempt++) {
+    response = await fetch(`${base}${source}`, {redirect: 'manual'});
+    if (response.status === 301 && new URL(response.headers.get('location')).pathname === target) break;
+    await response.arrayBuffer();
+    await sleep(5000);
+  }
   if (response.status !== 301) throw new Error(`${source} expected 301, received ${response.status}`);
   if (new URL(response.headers.get('location')).pathname !== target) throw new Error(`${source} has unexpected redirect target`);
   console.log(`PASS ${source} → ${target}`);

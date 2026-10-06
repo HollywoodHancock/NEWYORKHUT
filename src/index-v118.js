@@ -1,4 +1,6 @@
 import site from './index-v117.js';
+import {CORE_GUIDES, renderCoreGuide} from './content/core-guides.js';
+import {EDUCATIONAL_REDIRECTS, canonicalPath, reconcileEducationalLinks, reconcileConsolidatedSitemap} from './seo-consolidation.js';
 
 const VERSION = 'v118';
 const FEATURE = 'restore-missing-footer-v118';
@@ -30,13 +32,32 @@ export function restoreMissingFooter(html) {
 
 export default {
   async fetch(request, env, ctx) {
-    const response = await site.fetch(request, env, ctx);
+    const url = new URL(request.url);
+    const path = url.pathname.replace(/\/+$/, '') || '/';
+    const target = canonicalPath(path);
+    // Resolve reviewed aliases before the historical handlers and host redirect.
+    // Keep a single hop, including HTTP/www and trailing-slash variants.
+    if (EDUCATIONAL_REDIRECTS.has(path) || (CORE_GUIDES.has(target) &&
+        (url.protocol !== 'https:' || url.hostname !== 'newyorkhut.com' || url.pathname !== target))) {
+      const destination = new URL(target, 'https://newyorkhut.com');
+      destination.search = url.search;
+      return new Response(null, {status:301, headers:{location:destination.toString(),
+        'cache-control':'public, max-age=300', 'x-newyorkhut-version':VERSION, 'x-newyorkhut-feature':FEATURE}});
+    }
+    const coreHtml = renderCoreGuide(path);
+    const response = coreHtml === null ? await site.fetch(request, env, ctx) :
+      new Response(coreHtml, {headers:{'content-type':'text/html; charset=utf-8', 'cache-control':'public, max-age=300'}});
     const headers = new Headers(response.headers);
     headers.set('x-newyorkhut-version', VERSION);
     headers.set('x-newyorkhut-feature', FEATURE);
     const type = headers.get('content-type') || '';
+    if (path === '/sitemap.xml' && response.status === 200 && type.includes('xml')) {
+      const result = reconcileConsolidatedSitemap(await response.text());
+      headers.set('x-sitemap-url-count', String(result.count));
+      return new Response(result.xml, {status:200, headers});
+    }
     if (response.status === 200 && type.includes('text/html')) {
-      return new Response(restoreMissingFooter(await response.text()), {
+      return new Response(reconcileEducationalLinks(restoreMissingFooter(await response.text())), {
         status: response.status, statusText: response.statusText, headers
       });
     }

@@ -1,6 +1,6 @@
 import site from './index-v118.js';
 
-const DEPLOYMENT_MARKER = 'v118-legacy-route-repair-2026-10-06';
+const DEPLOYMENT_MARKER = 'v118-core-guides-consolidation-2026-10-06';
 
 export default {
   async fetch(request, env, ctx) {
@@ -14,7 +14,7 @@ export default {
         deploymentMarker: DEPLOYMENT_MARKER,
         entrypoint: 'src/index.js',
         target: 'src/index-v118.js',
-        feature: 'restore-missing-footer-v118',
+        feature: 'core-guides-and-reviewed-consolidation',
         seo: {
           role: 'informational authority and education',
           transactionDomain: 'https://nyhut.com/ny-hut-permit',
@@ -25,7 +25,10 @@ export default {
           contextualAxleLinksCorrected: true,
           temporaryPermitCutoffEastern: '13:30',
           primaryPermitGuide: '/new-york-hut-guide',
-          canonicalHostEnforced: true
+          canonicalHostEnforced: true,
+          coreGuidesSourceCheck: '2026-10-06',
+          improvedCorePages: 6,
+          reviewedContentMerges: 28
         },
         sitemap: {
           route: '/sitemap.xml',
