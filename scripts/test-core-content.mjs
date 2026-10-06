@@ -49,6 +49,10 @@ test('six core pages have visible navigation, a single canonical and Article, re
     assert.equal((html.match(/rel="canonical"/g)||[]).length, 1, path);
     assert.equal((html.match(/<footer\b/g)||[]).length, 1, path);
     assert.match(html, /aria-label="Primary navigation"/);
+    const navigation = html.match(/<nav aria-label="Primary navigation">(.*?)<\/nav>/s)?.[1];
+    for (const href of ['/learn', '/new-york-hut-guide', '/tools', '/services', '/ask-hut-ai', '/site-map']) {
+      assert.ok(navigation?.includes(`href="${href}"`), `${path} missing navigation link ${href}`);
+    }
     assert.ok(html.includes(page.heading), path);
     const schemas = [...html.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs)].map(m=>JSON.parse(m[1]));
     assert.equal(schemas.length, 1, path);

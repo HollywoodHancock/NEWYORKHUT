@@ -1,6 +1,6 @@
 import site from './index-v118.js';
 
-const DEPLOYMENT_MARKER = 'v118-core-guides-consolidation-2026-10-06';
+const DEPLOYMENT_MARKER = 'v118-core-guides-consolidation-nav-2026-10-06';
 
 export default {
   async fetch(request, env, ctx) {
