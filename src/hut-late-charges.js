@@ -14,12 +14,11 @@ export function parseHutDate(value) {
 export function calculateHutLateCharges(tax, dueDate, receiptDate) {
   const due = parseHutDate(dueDate), received = parseHutDate(receiptDate);
   if (!Number.isFinite(tax) || tax < 0 || !due || !received) return {error:'Enter a valid nonnegative tax amount, adjusted due date, and expected NYS receipt date.'};
-  const round = value => Math.round((value + Number.EPSILON) * 100) / 100;
-  const taxAmount = round(tax), base = Math.round(taxAmount);
+  const taxAmount = Math.round((tax + Number.EPSILON) * 100) / 100, base = Math.round(taxAmount);
   if (received <= due || taxAmount === 0) return {tax:taxAmount, base, months:0, penalty:0, interest:0, days:0, total:taxAmount};
   let months = (received.getUTCFullYear()-due.getUTCFullYear())*12 + received.getUTCMonth()-due.getUTCMonth();
   if (received.getUTCDate()>due.getUTCDate() || months===0) months++;
-  const penalty = round(base * Math.min(.30,.10+Math.max(0,months-1)*.01));
+  const penalty = Math.round((base * Math.min(.30,.10+Math.max(0,months-1)*.01) + Number.EPSILON) * 100) / 100;
   let principal = base, days = 0;
   // Match NYHUT: accrue after the due date through the day before state receipt.
   for (let day = new Date(due.getTime()+86400000); day < received; day = new Date(day.getTime()+86400000)) {
@@ -29,7 +28,7 @@ export function calculateHutLateCharges(tax, dueDate, receiptDate) {
     principal *= 1 + period.rate/365;
     days++;
   }
-  const interest = round(principal-base);
-  return {tax:taxAmount, base, months, penalty, interest, days, total:round(taxAmount+penalty+interest)};
+  const interest = Math.round((principal-base + Number.EPSILON) * 100) / 100;
+  return {tax:taxAmount, base, months, penalty, interest, days, total:Math.round((taxAmount+penalty+interest + Number.EPSILON) * 100) / 100};
 }
 export const hutLateChargesBrowserCode = `const HUT_INTEREST_RATES=${JSON.stringify(HUT_INTEREST_RATES)};\n${parseHutDate.toString()}\n${calculateHutLateCharges.toString()}`;

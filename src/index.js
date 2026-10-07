@@ -1,6 +1,6 @@
 import site from './index-v118.js';
 
-const DEPLOYMENT_MARKER = 'v118-late-charge-tools-2026-10-07';
+const DEPLOYMENT_MARKER = 'v118-late-charge-tools-verified-2026-10-07';
 
 export default {
   async fetch(request, env, ctx) {

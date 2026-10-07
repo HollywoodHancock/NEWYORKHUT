@@ -21,4 +21,6 @@ The filing-service CTA has an explicit destination label in the existing commerc
 
 Validation: 22 local regression tests including rendered browser scripts, known $134.10/$13.40/$0.08/$147.58 example, on-time/zero/invalid dates, monthly boundaries, cap, quarterly transitions, unsupported periods, optional toggle, selected-period/projection separation, final metadata/navigation/footer/link contract. Worker dry-run and production-contract guard. Functional Guard also runs calculator assertions against live HTML after publication, alongside existing route checks.
 
-Deployment marker: v118-late-charge-tools-2026-10-07. Rollback baseline: bc2d1cebe3549d2c607ba9f6f32c8acbc450a27c. Restore only this release's files if rollback is needed; preserve concurrent project changes.
+Deployment marker: v118-late-charge-tools-verified-2026-10-07. Rollback baseline: bc2d1cebe3549d2c607ba9f6f32c8acbc450a27c. Restore only this release's files if rollback is needed; preserve concurrent project changes.
+
+Live calculation verification caught an esbuild keep-names helper introduced inside a function serialized into browser JavaScript. Removed the local named arrow-function dependency and added a regression run against a bundled Worker with keep-names enabled; source tests alone had not exposed it.

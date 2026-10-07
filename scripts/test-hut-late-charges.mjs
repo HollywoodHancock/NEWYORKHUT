@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import vm from 'node:vm';
-import worker from '../src/index.js';
+import sourceWorker from '../src/index.js';
+const worker=process.env.BUNDLED_WORKER ? (await import(process.env.BUNDLED_WORKER)).default : sourceWorker;
 import {calculateHutLateCharges as charges, parseHutDate} from '../src/hut-late-charges.js';
 import {hutFilingDueDate} from '../src/hut-deadline.js';
 
