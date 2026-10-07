@@ -25,6 +25,7 @@ const NO_SALES_HANDOFF = new Set([
 
 const LABEL_DESTINATIONS = new Map([
   ['my nyhut', '/my-nyhut'],
+  ['prepare your mt-903 at nyhut.com →', '/my-nyhut'],
   ['customer dashboard', '/my-nyhut'],
   ['order status', '/lookup'],
   ['trip certificate', '/order?product=nyhut-temporary'],
