@@ -107,5 +107,28 @@ test('sitemap contains only final 200 canonicals and dates only the changed guid
     assert.equal(page.status, 200, path);
     assert.ok((await page.text()).includes(`rel="canonical" href="${url}"`), url);
   }
-  for (const path of CORE_GUIDES.keys()) assert.ok(xml.includes(`<loc>${origin}${path}</loc><lastmod>2026-10-06</lastmod>`), path);
+  for (const path of CORE_GUIDES.keys()) assert.ok(xml.includes(`<loc>${origin}${path}</loc><lastmod>${CORE_GUIDES.get(path).sourceCheckDate || "2026-10-06"}</lastmod>`), path);
+});
+
+test('expanded eligibility, credential, renewal, cost and exemption guides answer the specific decision',async()=>{
+ const cases=new Map([
+  ['/learn/who-needs-a-new-york-hut-permit',['18,000','8,000','4,000','ten trip certificates','ten days or less']],
+  ['/learn/new-york-hut-certificate-of-registration',['regular place of business','TR-8','TMT-334','January']],
+  ['/learn/new-york-hut-decals-explained',['front registration plate','rear registration plate','five days','cannot move a decal']],
+  ['/services/hut-renewals',['renewal is over','not an announcement','does not renew registration']],
+  ['/cost',['$1.50','$25','$0.84','$5.46','Recurring mileage tax','penalty and interest estimator']],
+  ['/learn/new-york-hut-exempt-vehicle-guide',['entire calendar month','Concrete pumps','snow blade','passengers for hire']]
+ ]);
+ for(const[path,phrases]of cases){
+  const page=CORE_GUIDES.get(path);assert.equal(page.sourceCheckDate,'2026-10-13');
+  const html=await(await get(path)).text();assert.ok(html.includes(`<title>${page.title}</title>`),path);
+  assert.ok(html.includes('<time datetime="2026-10-13">October 13, 2026</time>'),path);
+  for(const phrase of phrases)assert.ok(html.toLowerCase().includes(phrase.toLowerCase()),path+': '+phrase);
+  for(const m of html.matchAll(/<a[^>]*href="([^"]+)"/g)){
+   const u=new URL(m[1].replace(/&amp;/g,'&'),origin+path);
+   if(u.origin===origin&&!u.hash)assert.equal((await get(u.pathname)).status,200,path+': '+u.pathname);
+  }
+  const cta=html.match(/<a class="cta" href="([^"]+)"/)[1];const u=new URL(cta.replace(/&amp;/g,'&'));
+  assert.equal(u.hostname,'nyhut.com');assert.equal(u.searchParams.get('utm_source'),'newyorkhut.com');assert.equal(u.searchParams.get('utm_content'),path.slice(1));
+ }
 });

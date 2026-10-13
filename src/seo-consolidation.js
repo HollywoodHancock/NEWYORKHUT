@@ -187,14 +187,14 @@ export function reconcileConsolidatedSitemap(xml, {includeCoreGuides = true} = {
     const canonical = `https://newyorkhut.com${path}`;
     if (seen.has(canonical)) continue;
     seen.add(canonical);
-    const lastmod = CORE_GUIDES.has(path) ? `<lastmod>${SOURCE_CHECK_DATE}</lastmod>` : '';
+    const lastmod = CORE_GUIDES.has(path) ? `<lastmod>${CORE_GUIDES.get(path).sourceCheckDate || SOURCE_CHECK_DATE}</lastmod>` : '';
     entries.push(`<url><loc>${canonical}</loc>${lastmod}</url>`);
   }
   for (const path of includeCoreGuides ? CORE_GUIDES.keys() : []) {
     const canonical = `https://newyorkhut.com${path}`;
     if (!seen.has(canonical)) {
       seen.add(canonical);
-      entries.push(`<url><loc>${canonical}</loc><lastmod>${SOURCE_CHECK_DATE}</lastmod></url>`);
+      entries.push(`<url><loc>${canonical}</loc><lastmod>${CORE_GUIDES.get(path).sourceCheckDate || SOURCE_CHECK_DATE}</lastmod></url>`);
     }
   }
   return {xml:`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries.join('\n')}\n</urlset>`, count:entries.length};

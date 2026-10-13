@@ -1,6 +1,6 @@
 import site from './index-v118.js';
 
-const DEPLOYMENT_MARKER = 'v118-all-sitemap-canonical-repair-2026-10-13';
+const DEPLOYMENT_MARKER = 'v118-carrier-decision-guides-2026-10-13';
 
 export default {
   async fetch(request, env, ctx) {
@@ -29,7 +29,8 @@ export default {
           primaryPermitGuide: '/new-york-hut-guide',
           canonicalHostEnforced: true,
           coreGuidesSourceCheck: '2026-10-06',
-          improvedCorePages: 6,
+          improvedCorePages: 12,
+          additionalGuidesSourceCheck: '2026-10-13',
           reviewedContentMerges: 28
         },
         sitemap: {

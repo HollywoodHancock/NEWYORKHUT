@@ -10,7 +10,7 @@
     "run_worker_first": true
   },
   "vars": {
-    "DEPLOY_RELEASE": "v118-all-sitemap-canonical-repair-2026-10-13"
+    "DEPLOY_RELEASE": "v118-carrier-decision-guides-2026-10-13"
   },
   "observability": {
     "enabled": true
