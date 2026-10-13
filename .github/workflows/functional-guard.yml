@@ -31,7 +31,7 @@ jobs:
           npx esbuild src/index.js --bundle --format=esm --platform=neutral --keep-names --outfile=/tmp/newyorkhut-bundled.mjs
           BUNDLED_WORKER=/tmp/newyorkhut-bundled.mjs node --test scripts/test-hut-late-charges.mjs
       - name: Test footer and canonical redirects
-        run: node --test scripts/test-footer-and-canonicals.mjs scripts/test-core-content.mjs scripts/test-hut-late-charges.mjs
+        run: node --test scripts/test-footer-and-canonicals.mjs scripts/test-core-content.mjs scripts/test-hut-late-charges.mjs scripts/test-all-sitemaps.mjs
 
   live-production:
     name: Verify live NewYorkHUT.com

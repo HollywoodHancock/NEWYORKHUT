@@ -1,4 +1,5 @@
 import site from './index-v117.js';
+import {LEGACY_SITEMAP_PATHS} from './legacy-sitemaps.js';
 import {CORE_GUIDES, renderCoreGuide} from './content/core-guides.js';
 import {EDUCATIONAL_REDIRECTS, canonicalPath, reconcileEducationalLinks, reconcileConsolidatedSitemap} from './seo-consolidation.js';
 
@@ -51,8 +52,8 @@ export default {
     headers.set('x-newyorkhut-version', VERSION);
     headers.set('x-newyorkhut-feature', FEATURE);
     const type = headers.get('content-type') || '';
-    if (path === '/sitemap.xml' && response.status === 200 && type.includes('xml')) {
-      const result = reconcileConsolidatedSitemap(await response.text());
+    if ((path === '/sitemap.xml' || LEGACY_SITEMAP_PATHS.has(path)) && response.status === 200 && type.includes('xml')) {
+      const result = reconcileConsolidatedSitemap(await response.text(), {includeCoreGuides:path === '/sitemap.xml'});
       headers.set('x-sitemap-url-count', String(result.count));
       return new Response(result.xml, {status:200, headers});
     }

@@ -1,3 +1,4 @@
+import {HANDLER_ALIAS_REDIRECTS} from './legacy-sitemaps.js';
 import {LEGACY_ROUTE_REDIRECTS} from './legacy-route-redirects.js';
 import {CORE_GUIDES, SOURCE_CHECK_DATE} from './content/core-guides.js';
 
@@ -121,6 +122,7 @@ export const CONSOLIDATION_REDIRECTS = new Map([
 export const EDUCATIONAL_REDIRECTS = new Map([
   ...LEGACY_ROUTE_REDIRECTS,
   ...CONSOLIDATION_REDIRECTS,
+  ...HANDLER_ALIAS_REDIRECTS,
   ['/what-is-hut', '/new-york-hut-guide'],
   ['/new-york-hut-weight-threshold', '/learn/how-gvw-affects-your-hut-tax'],
   ['/learn/adding-a-vehicle-to-your-new-york-hut-account', '/learn/adding-a-vehicle-to-new-york-hut'],
@@ -175,7 +177,7 @@ export function reconcileEducationalLinks(html) {
     });
 }
 
-export function reconcileConsolidatedSitemap(xml) {
+export function reconcileConsolidatedSitemap(xml, {includeCoreGuides = true} = {}) {
   const seen = new Set();
   const entries = [];
   for (const match of xml.matchAll(/<url\b[^>]*>[\s\S]*?<\/url>/gi)) {
@@ -188,7 +190,7 @@ export function reconcileConsolidatedSitemap(xml) {
     const lastmod = CORE_GUIDES.has(path) ? `<lastmod>${SOURCE_CHECK_DATE}</lastmod>` : '';
     entries.push(`<url><loc>${canonical}</loc>${lastmod}</url>`);
   }
-  for (const path of CORE_GUIDES.keys()) {
+  for (const path of includeCoreGuides ? CORE_GUIDES.keys() : []) {
     const canonical = `https://newyorkhut.com${path}`;
     if (!seen.has(canonical)) {
       seen.add(canonical);

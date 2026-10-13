@@ -1,6 +1,6 @@
 import site from './index-v118.js';
 
-const DEPLOYMENT_MARKER = 'v118-late-charge-tools-verified-2026-10-07';
+const DEPLOYMENT_MARKER = 'v118-all-sitemap-canonical-repair-2026-10-13';
 
 export default {
   async fetch(request, env, ctx) {
@@ -15,6 +15,7 @@ export default {
         entrypoint: 'src/index.js',
         target: 'src/index-v118.js',
         feature: 'core-guides-and-reviewed-consolidation',
+        sitemapRepair: {legacySitemaps:24, canonicalHandlerAliases:4, auditScope:'all published XML sitemaps'},
         lateChargeTools: {rules: 'NYHUT MT-903 parity', ratesVerified: '2026-10-07', interestRateCoverage: '2026-01-01 through 2026-12-31'},
         seo: {
           role: 'informational authority and education',

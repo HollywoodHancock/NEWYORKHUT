@@ -63,7 +63,7 @@ export default {
     headers.set('x-newyorkhut-feature', FEATURE);
 
     const contentType = headers.get('content-type') || '';
-    if (response.status === 200 && contentType.includes('xml')) {
+    if (new URL(request.url).pathname === '/sitemap.xml' && response.status === 200 && contentType.includes('xml')) {
       const xml = reconcileSitemap(await response.text());
       const count = (xml.match(/<loc>/g) || []).length;
       headers.set('x-sitemap-url-count', String(count));
