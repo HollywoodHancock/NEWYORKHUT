@@ -27,5 +27,13 @@ export const LEGACY_ROUTE_REDIRECTS = new Map([
   [
     "/ny-hut-faq",
     "/new-york-hut"
+  ],
+  [
+    "/ny-hut-quarterly-filing",
+    "/filing/quarterly-due-dates"
+  ],
+  [
+    "/ifta-vs-ny-hut",
+    "/compare/hut-vs-ifta"
   ]
 ]);
