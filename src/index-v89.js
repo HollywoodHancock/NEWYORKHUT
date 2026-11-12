@@ -81,7 +81,7 @@ function firstH1(html) {
 
 function seoTitle(path, h1) {
   const exact = {
-    '/': 'New York HUT Guide, Tools & Compliance Help | NewYorkHUT.com',
+    '/': 'New York HUT Knowledge Base: Guides, Forms & Free Tools',
     '/tools': 'Free New York HUT Calculators & Compliance Tools',
     '/hut-guide': 'New York HUT Guide | Registration, Filing & Compliance',
     '/learn': 'New York HUT Knowledge Center | Guides & Compliance Help',
