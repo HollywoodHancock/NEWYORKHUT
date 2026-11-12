@@ -1,10 +1,9 @@
 import site from './index-v82.js';
 
 const VERSION = 'v83';
-const FEATURE = 'same-origin-banner-proxy-v83';
+const FEATURE = 'bundled-lossless-banner';
 const BANNER_PATH = '/newyorkhut-header-banner.png';
-const SOURCE_URL = 'https://raw.githubusercontent.com/HollywoodHancock/NEWYORKHUT/main/public/newyorkhut-header-banner.png?v=20260802-04';
-const BANNER_URL = `${BANNER_PATH}?v=20260802-05`;
+const BANNER_URL = '/newyorkhut-header-banner-bda5bffb9eba.webp';
 
 function forceSameOriginBanner(html) {
   if (!/<html/i.test(html)) return html;
@@ -12,42 +11,26 @@ function forceSameOriginBanner(html) {
   return html
     .replace(
       /(<div\b[^>]*class="[^"]*nyh-v76-banner[^"]*"[^>]*>\s*<img\b[^>]*\bsrc=")[^"]*("[^>]*>)/i,
-      `$1${BANNER_URL}$2`
+      (_, before, after) => `${before}${BANNER_URL}${after.replace(/\s+fetchpriority="[^"]*"/i, '').replace(/>$/, ' fetchpriority="high">')}`
     )
     .replace(/\s+onerror="[^"]*"/i, '');
 }
 
-async function serveBanner() {
-  const upstream = await fetch(SOURCE_URL, {
-    cf: {
-      cacheEverything: true,
-      cacheTtl: 86400
-    }
-  });
-
-  if (!upstream.ok) {
-    return new Response(`Banner upstream failed: ${upstream.status}`, {
-      status: 502,
-      headers: {
-        'content-type': 'text/plain; charset=utf-8',
-        'cache-control': 'no-store',
-        'x-newyorkhut-version': VERSION,
-        'x-newyorkhut-feature': FEATURE
-      }
-    });
+async function serveBanner(request, env) {
+  if (!env?.ASSETS?.fetch) {
+    return new Response('Banner asset unavailable', {status: 503, headers: {'cache-control': 'no-store'}});
   }
-
+  // Use the deployment's own asset binding, never the public Worker URL or GitHub.
+  // Forward request headers/method so HEAD and conditional requests keep asset semantics.
+  const upstream = await env.ASSETS.fetch(request);
+  if (!upstream.ok && upstream.status !== 304) return upstream;
   const headers = new Headers(upstream.headers);
-  headers.set('content-type', 'image/png');
-  headers.set('cache-control', 'public, max-age=86400');
+  headers.set('cache-control', new URL(request.url).pathname === BANNER_URL
+    ? 'public, max-age=31536000, immutable'
+    : 'public, max-age=86400');
   headers.set('x-content-type-options', 'nosniff');
-  headers.set('x-newyorkhut-version', VERSION);
-  headers.set('x-newyorkhut-feature', FEATURE);
-
-  return new Response(upstream.body, {
-    status: 200,
-    headers
-  });
+  headers.set('x-newyorkhut-banner', 'bundled-lossless-webp-2026-11-12');
+  return new Response(upstream.body, {status: upstream.status, statusText: upstream.statusText, headers});
 }
 
 export default {
@@ -55,8 +38,8 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname.replace(/\/+$/, '') || '/';
 
-    if (path === BANNER_PATH) {
-      return serveBanner();
+    if (path === BANNER_PATH || path === BANNER_URL) {
+      return serveBanner(request, env);
     }
 
     const response = await site.fetch(request, env, ctx);
