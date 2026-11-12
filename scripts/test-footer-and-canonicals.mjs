@@ -3,10 +3,10 @@ import test from 'node:test';
 import {LEGACY_ROUTE_REDIRECTS} from '../src/legacy-route-redirects.js';
 import {restoreMissingFooter} from '../src/index-v118.js';
 
-test('seven broken legacy routes redirect in one hop to working canonical pages', async () => {
+test('broken legacy routes redirect in one hop to working canonical pages', async () => {
   const {default: worker} = await import('../src/index.js');
   for (const [source, target] of LEGACY_ROUTE_REDIRECTS) {
-    for (const origin of ['https://newyorkhut.com', 'http://www.newyorkhut.com']) {
+    for (const origin of ['https://newyorkhut.com', 'http://www.newyorkhut.com', 'https://www.newyorkhut.com', 'http://newyorkhut.com']) {
       const response = await worker.fetch(new Request(`${origin}${source}/?source=test`), {}, {});
       assert.equal(response.status, 301, source);
       assert.equal(response.headers.get('location'), `https://newyorkhut.com${target}?source=test`);
