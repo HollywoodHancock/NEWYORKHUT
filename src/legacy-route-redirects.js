@@ -35,5 +35,29 @@ export const LEGACY_ROUTE_REDIRECTS = new Map([
   [
     "/ifta-vs-ny-hut",
     "/compare/hut-vs-ifta"
+  ],
+  [
+    "/what-is-new-york-highway-use-tax",
+    "/new-york-hut-guide"
+  ],
+  [
+    "/ny-hut-account-closure",
+    "/new-york-hut/how-do-i-close-a-new-york-hut-account"
+  ],
+  [
+    "/ny-hut-certificate-cancellation",
+    "/new-york-hut/how-do-i-remove-or-cancel-a-hut-vehicle"
+  ],
+  [
+    "/ny-hut-mileage-record-requirements",
+    "/learn/hut-recordkeeping-requirements"
+  ],
+  [
+    "/ny-hut-filing-frequency-changes",
+    "/filing/quarterly-due-dates"
+  ],
+  [
+    "/irp-vs-ny-hut",
+    "/learn/irp-apportioned-registration"
   ]
 ]);
