@@ -2,9 +2,10 @@ import fs from 'node:fs';
 import {LEGACY_ROUTE_REDIRECTS} from '../src/legacy-route-redirects.js';
 import {CORE_GUIDES} from '../src/content/core-guides.js';
 import {CONSOLIDATION_REDIRECTS} from '../src/seo-consolidation.js';
+import {RECOVERY_PATHS} from './search-recovery-pages.mjs';
 
 const base = process.env.SITE_URL || 'https://newyorkhut.com';
-const routes = [...new Set(['/', '/learn', '/tools', '/services', '/new-york-hut-guide', '/form-tmt-1-ny-hut', '/terms', '/privacy-policy', ...CORE_GUIDES.keys()])];
+const routes = [...new Set(['/', '/learn', '/tools', '/services', '/new-york-hut-guide', '/form-tmt-1-ny-hut', '/terms', '/privacy-policy', ...CORE_GUIDES.keys(), ...RECOVERY_PATHS])];
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const entry = fs.readFileSync('src/index.js', 'utf8');
 const targetMatch = entry.match(/import\s+site\s+from\s+['"]\.\/(index-v(\d+)\.js)['"]/);
@@ -68,7 +69,25 @@ for (const route of routes) {
     if (count !== 1) throw new Error(`${route} expected one ${label}, found ${count}`);
   }
   if (/\bnoindex\b/i.test(response.headers.get('x-robots-tag') ?? '')) throw new Error(`${route} has a noindex response header`);
+  const canonicalTag = body.match(/<link\b[^>]*\brel=["']canonical["'][^>]*>/i)?.[0];
+  const canonical = canonicalTag?.match(/\bhref=["']([^"']+)["']/i)?.[1];
+  if (canonical !== `${base}${route}`) throw new Error(`${route} has unexpected canonical ${canonical}`);
+  if (/<meta\b[^>]*name=["']robots["'][^>]*noindex/i.test(body)) throw new Error(`${route} has a noindex meta tag`);
   console.log(`PASS ${route}`);
+}
+
+// Check the old hostname itself, not only current sitemap destinations.
+// A reduced but internally valid sitemap must not hide a lost historical page.
+if (base === 'https://newyorkhut.com') {
+  for (const route of RECOVERY_PATHS) {
+    const response = await fetch(`http://www.newyorkhut.com${route}`, {redirect:'manual', signal:AbortSignal.timeout(25000)});
+    const expected = `${base}${route}`;
+    if (response.status !== 301 || response.headers.get('location') !== expected) {
+      throw new Error(`Historical URL ${route} must redirect directly to ${expected}; got ${response.status}/${response.headers.get('location')}`);
+    }
+    await response.arrayBuffer();
+    console.log(`PASS historical HTTP/www ${route}`);
+  }
 }
 
 for (const [source, target] of [

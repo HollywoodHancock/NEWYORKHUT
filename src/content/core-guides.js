@@ -59,7 +59,7 @@ export const CORE_GUIDES = new Map([
       section('after-registration', 'Costs and continuing obligations', `<p>The state’s regular certificate and decal fee is $1.50 per vehicle; permit-service charges are additional. Check the actual service selection and total before paying. State approval and document issuance determine when you can use the credential.</p><p>Regular HUT/AFC certificate holders have return obligations even when no tax is due. Registration does not pay future mileage tax or close an old account. Use the ${link('/mt-903-filing-center', 'MT-903 filing center')} to prepare mileage, toll support, and the assigned reporting period.</p><p><strong>Example:</strong> If an existing carrier adds a second tractor, check the existing account, register that tractor’s VIN, review its issued credential, and add it to vehicle-level mileage records. Do not treat the first tractor’s decal as coverage for both.</p>`)
     ],
     sources: ['registration', 'account', 'application', 'decals', 'filing'],
-    related: [['/new-york-hut-guide', 'Complete permit guide'], ['/form-tmt-1-ny-hut', 'Form TMT-1'], ['/learn/new-york-hut-certificate-of-registration', 'Certificate and decal guidance']],
+    related: [['/new-york-hut-guide', 'Complete permit guide'], ['/form-tmt-1-ny-hut', 'Form TMT-1'], ['/learn/new-york-hut-certificate-of-registration', 'Certificate and decal guidance'], ['/vehicles/box-trucks', 'HUT requirements for box trucks'], ['/new-york-hut/how-do-i-add-a-vehicle-to-my-hut-account', 'Add a vehicle to an existing account']],
     cta: ['https://nyhut.com/ny-hut-permit', 'Prepare a HUT registration at NYHUT.com']
   }],
   ['/guides/get-trip-certificate', {
